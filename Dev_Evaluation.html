@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兒童發展聯評報告生成器</title>
+    <style>
+        :root {
+            --primary-navy: #2c3e50;
+            --accent-blue: #3498db;
+            --bg-gray: #f4f7f6;
+            --card-white: #ffffff;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-gray);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-navy);
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+
+        .instruction {
+            background: #e8f4f8;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+        }
+
+        .eval-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .eval-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background: #fafafa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .eval-row:hover {
+            background: #f0f7fb;
+            border-color: #b3d4fc;
+        }
+
+        .item-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary-navy);
+            flex: 1;
+        }
+
+        .options-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 隱藏原生單選框，改用按鈕樣式 */
+        .options-group input[type="radio"] {
+            display: none;
+        }
+
+        .options-group label {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            background: white;
+            color: #555;
+            user-select: none;
+        }
+
+        /* 正常/預設狀態 */
+        .options-group input[value="normal"]:checked + label {
+            background: #e0e0e0;
+            color: #333;
+            border-color: #9e9e9e;
+        }
+
+        /* 邊緣(臨界)狀態 */
+        .options-group input[value="borderline"]:checked + label {
+            background: #fff3e0;
+            color: #e65100;
+            border-color: #ffb74d;
+            font-weight: bold;
+        }
+
+        /* 遲緩狀態 */
+        .options-group input[value="delayed"]:checked + label {
+            background: #ffebee;
+            color: #c62828;
+            border-color: #e57373;
+            font-weight: bold;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-generate {
+            background-color: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-generate:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+            flex: 0.3;
+        }
+
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+        }
+
+        /* 輸出區域 */
+        .output-section {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed var(--accent-blue);
+            border-radius: 8px;
+            background: #f9fcff;
+            display: none;
+        }
+
+        .output-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            min-height: 50px;
+        }
+
+        .btn-copy {
+            background-color: #27ae60;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-copy:hover {
+            background-color: #219a52;
+        }
+
+        /* 返回按鈕 */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            text-decoration: none;
+        }
+        .back-link:hover { color: var(--primary-navy); }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>兒童發展聯評報告生成器</h1>
+    <div class="instruction">
+        請點選各項目的評估結果（預設為正常不顯示）。系統會自動組合文字並過濾重複的療育建議。
+    </div>
+
+    <form id="evalForm">
+        <div class="eval-grid" id="grid-container">
+            </div>
+
+        <div class="action-btns">
+            <button type="button" class="btn-reset" onclick="resetForm()">重設</button>
+            <button type="button" class="btn-generate" onclick="generateReport()">生成病歷紀錄</button>
+        </div>
+    </form>
+
+    <div class="output-section" id="outputSection">
+        <div class="output-text" id="finalResult"></div>
+        <button type="button" class="btn-copy" onclick="copyToClipboard()" id="copyBtn">複製到剪貼簿</button>
+    </div>
+
+    <a href="index.html" class="back-link">← 返回工具箱</a>
+</div>
+
+<script>
+    // 定義評估項目與對應的早期療育內容
+    const evalItems = [
+        { id: '口語理解', therapies: ['語言'] },
+        { id: '口語表達', therapies: ['語言'] },
+        { id: '說話異常(構音)', therapies: ['語言'] },
+        { id: '粗大動作', therapies: ['物理'] },
+        { id: '精細動作', therapies: ['職能'] },
+        { id: '認知', therapies: ['認知'] },
+        { id: '社會情緒', therapies: ['心理', '職能'] }
+    ];
+
+    // 動態生成 HTML UI
+    const gridContainer = document.getElementById('grid-container');
+    evalItems.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'eval-row';
+        row.innerHTML = `
+            <div class="item-name">${item.id}</div>
+            <div class="options-group">
+                <input type="radio" id="normal_${index}" name="${item.id}" value="normal" checked>
+                <label for="normal_${index}">正常</label>
+
+                <input type="radio" id="border_${index}" name="${item.id}" value="borderline">
+                <label for="border_${index}">邊緣(臨界)</label>
+
+                <input type="radio" id="delayed_${index}" name="${item.id}" value="delayed">
+                <label for="delayed_${index}">遲緩</label>
+            </div>
+        `;
+        gridContainer.appendChild(row);
+    });
+
+    // 生成報告邏輯
+    function generateReport() {
+        let textParts = [];
+        let therapySet = new Set(); // 使用 Set 來確保療育項目不重複
+
+        evalItems.forEach(item => {
+            const radios = document.getElementsByName(item.id);
+            let selectedValue = 'normal';
+            for (let radio of radios) {
+                if (radio.checked) {
+                    selectedValue = radio.value;
+                    break;
+                }
+            }
+
+            if (selectedValue === 'borderline') {
+                textParts.push(`於${item.id}發展臨界`);
+                item.therapies.forEach(t => therapySet.add(t));
+            } else if (selectedValue === 'delayed') {
+                textParts.push(`於${item.id}發展遲緩`);
+                item.therapies.forEach(t => therapySet.add(t));
+            }
+        });
+
+        const outputDiv = document.getElementById('outputSection');
+        const resultText = document.getElementById('finalResult');
+        const copyBtn = document.getElementById('copyBtn');
+
+        if (textParts.length === 0) {
+            resultText.innerHTML = "<span style='color:#7f8c8d;'>個案發展目前均在正常範圍，無需特別建議早期療育。</span>";
+            copyBtn.style.display = 'none';
+        } else {
+            const evalString = textParts.join('，');
+            const therapyString = Array.from(therapySet).join('、');
+            const finalString = `個案經本院聯合評估，${evalString}，建議早期療育包含${therapyString}等。`;
+            
+            resultText.innerText = finalString;
+            copyBtn.style.display = 'block';
+            copyBtn.innerText = "複製到剪貼簿";
+            copyBtn.style.backgroundColor = "#27ae60";
+        }
+        
+        outputDiv.style.display = 'block';
+    }
+
+    // 重設表單
+    function resetForm() {
+        document.getElementById('evalForm').reset();
+        document.getElementById('outputSection').style.display = 'none';
+    }
+
+    // 複製到剪貼簿功能
+    function copyToClipboard() {
+        const text = document.getElementById('finalResult').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = "✓ 已複製！";
+            btn.style.backgroundColor = "#2c3e50";
+        }).catch(err => {
+            alert('複製失敗，請手動選取複製');
+        });
+    }
+</script>
+
+</body>
+</html>
