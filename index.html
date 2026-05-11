@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>臨床評估工具箱 | Clinical Evaluation Toolkit</title>
+    <title>OPEN-PSY | 開源心智-快評網</title>
     <style>
         :root {
             --primary-navy: #2c3e50;
@@ -22,7 +22,6 @@
             padding: 0;
         }
 
-        /* 頂部區域 */
         header {
             background: var(--primary-navy);
             color: white;
@@ -34,7 +33,6 @@
         header h1 { margin: 0; font-size: 2rem; letter-spacing: 1px; }
         header p { margin: 10px 0 0; opacity: 0.8; }
 
-        /* 搜尋列 */
         .search-container {
             max-width: 600px;
             margin: -25px auto 30px auto;
@@ -57,7 +55,6 @@
             transform: scale(1.02);
         }
 
-        /* 工具網格 */
         .main-content {
             max-width: 1200px;
             margin: 0 auto;
@@ -96,7 +93,6 @@
             margin-top: 4px;
         }
 
-        /* 子項目連結列表 */
         .tool-list {
             list-style: none;
             padding: 0;
@@ -104,14 +100,14 @@
         }
 
         .tool-item {
-            margin-bottom: 12px;
+            margin-bottom: 18px;
         }
 
         .tool-name {
             font-weight: bold;
-            color: #2980b9;
+            color: #2c3e50;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         .sub-links {
@@ -126,7 +122,7 @@
             background: #f0f3f5;
             color: #555;
             font-size: 0.85rem;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 4px;
             transition: 0.2s;
             border: 1px solid #e0e0e0;
@@ -144,7 +140,6 @@
             font-size: 0.9rem;
         }
 
-        /* 搜尋無結果提示 */
         #noResults {
             grid-column: 1 / -1;
             text-align: center;
@@ -153,7 +148,6 @@
             display: none;
         }
         
-        /* QR Code 區塊 */
         .qr-section {
             text-align: center;
             margin: 40px auto 20px auto;
@@ -172,50 +166,41 @@
             margin-bottom: 15px;
         }
         
-        .qr-section img {
-            border: 1px solid #eee;
-            padding: 5px;
-            border-radius: 8px;
-        }
-
         footer {
             text-align: center;
             padding: 20px 40px 40px 40px;
             color: #95a5a6;
             font-size: 0.9rem;
         }
-
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.5rem; }
-        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>臨床評估工具箱</h1>
-    <p>Clinical Evaluation Toolkit</p>
+    <h1>OPEN-PSY 開源心智-快評網</h1>
+    <p>Open Psychiatry & Psychology Evaluation Network</p>
 </header>
 
 <div class="search-container">
-    <input type="text" id="toolSearch" placeholder="搜尋量表名稱或關鍵字... Search scales (e.g. PSQI, ADHD)" onkeyup="filterTools()">
+    <input type="text" id="toolSearch" placeholder="搜尋關鍵字... (例如: PSQI, SNAP, 資源)" onkeyup="filterTools()">
 </div>
 
 <div class="main-content" id="toolGrid">
     
-<div class="category-card" data-keywords="兒童發展 child development adhd asd 注意力不足 過動症 自閉症 亞斯伯格 聯評 遲緩 早療">
+    <div class="category-card" data-keywords="兒童發展 child development adhd asd 注意力不足 過動症 自閉症 亞斯伯格 聯評 遲緩 早療 snap snap-iv">
         <h2>兒童發展 <small>Child Development</small></h2>
         <ul class="tool-list">
             <li class="tool-item">
                 <span class="tool-name">聯合評估 (Early Intervention)</span>
                 <div class="sub-links">
-                    <a href="Dev_Evaluation.html">病歷報告生成器 (Report Gen)</a>
+                    <a href="Dev_Evaluation.html">病歷報告生成器</a>
                 </div>
             </li>
             <li class="tool-item">
                 <span class="tool-name">注意力不足 / 過動症 (ADHD)</span>
                 <div class="sub-links">
-                    <span class="placeholder-text">量表編制中...</span>
+                    <a href="SNAP_IV.html">SNAP-IV 互動版</a>
+                    <a href="SNAP_IV_Digital.html">數位評估版 (Digital)</a>
                 </div>
             </li>
             <li class="tool-item">
@@ -241,33 +226,45 @@
         </ul>
     </div>
 
-    <div class="category-card" data-keywords="幻聽 妄想 精神病 psychosis hallucination delusion schizophrenia">
+    <div class="category-card" data-keywords="心理健康 資源 mental health resources 轉介 諮商 治療所 醫院 診所 中區 台中 彰化 南投 psyresources">
+        <h2>心理健康資源 <small>Mental Health Resources</small></h2>
+        <ul class="tool-list">
+            <li class="tool-item">
+                <span class="tool-name">跨機構轉介與諮詢網絡</span>
+                <div class="sub-links">
+                    <a href="PsyResources_CentralTW_2026.html">中區心理健康資源表</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="category-card" data-keywords="幻聽 妄想 精神病 psychosis">
         <h2>幻聽 / 妄想 / 精神病 <small>Psychosis</small></h2>
-        <div class="placeholder-text">尚無量表，擴充中...</div>
+        <div class="placeholder-text">擴充中...</div>
     </div>
 
-    <div class="category-card" data-keywords="憂鬱 depression bdi phq9">
+    <div class="category-card" data-keywords="憂鬱 depression">
         <h2>憂鬱 <small>Depression</small></h2>
-        <div class="placeholder-text">尚無量表，擴充中...</div>
+        <div class="placeholder-text">擴充中...</div>
     </div>
 
-    <div class="category-card" data-keywords="焦慮 anxiety gad7 bai">
+    <div class="category-card" data-keywords="焦慮 anxiety">
         <h2>焦慮 <small>Anxiety</small></h2>
-        <div class="placeholder-text">尚無量表，擴充中...</div>
+        <div class="placeholder-text">擴充中...</div>
     </div>
 
-    <div class="category-card" data-keywords="人格 personality pidi5">
+    <div class="category-card" data-keywords="人格 personality">
         <h2>人格 <small>Personality</small></h2>
-        <div class="placeholder-text">尚無量表，擴充中...</div>
+        <div class="placeholder-text">擴充中...</div>
     </div>
 
-    <div id="noResults">找不到相關量表，請嘗試其他關鍵字。</div>
+    <div id="noResults">找不到相關量表。</div>
 </div>
 
 <div class="qr-section">
-    <h3>📱 手機掃描快速開啟</h3>
+    <h3>📱 手機掃描開啟</h3>
     <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://cafmagic.github.io/clinical-scales/" alt="工具箱 QR Code">
-    <p style="margin: 10px 0 0 0; font-size: 0.85rem; color: #7f8c8d;">讓個案或家屬直接掃描作答</p>
+    <p style="margin: 10px 0 0 0; font-size: 0.85rem; color: #7f8c8d;">快速開啟診間工具箱</p>
 </div>
 
 <footer>
@@ -291,7 +288,6 @@
                 cards[i].style.display = "none";
             }
         }
-
         document.getElementById('noResults').style.display = hasResults ? "none" : "block";
     }
 </script>
