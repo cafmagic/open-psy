@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中區心理健康資源表 (2026年版)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e8f4f8;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            line-height: 1.6; 
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+        }
+        header h1 { margin: 0; font-size: 2.2em; }
+        header p { font-size: 1.1em; margin-top: 10px; color: #bdc3c7; }
+        
+        .container { 
+            max-width: 1000px; 
+            margin: 30px auto; 
+            padding: 0 20px; 
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 15px;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95em;
+        }
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+        tr:hover { background-color: #f9fbfd; }
+        
+        .notice {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffeeba;
+        }
+
+        /* QR Code & Action Section */
+        .action-section {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-top: 50px;
+        }
+        #qrcode-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        #qrcode {
+            background: white;
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .download-btn { 
+            display: inline-block; 
+            background-color: var(--secondary-color); 
+            color: white; 
+            padding: 12px 28px; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            transition: 0.3s;
+        }
+        .download-btn:hover { background-color: #2980b9; }
+
+        footer { 
+            text-align: center; 
+            padding: 30px; 
+            color: #95a5a6; 
+            font-size: 0.85em; 
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>中區心理健康資源表 (2026年版)</h1>
+        <p>提供中部地區民眾、病友及家屬專業求助管道資訊</p>
+    </header>
+
+    <div class="container">
+        
+        <h2 class="section-title">一、彰化縣心理衛生相關資源表</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="25%">相關資源</th>
+                        <th width="50%">聯繫方式與說明</th>
+                        <th width="25%">適用對象</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>彰化縣社區心理衛生中心</strong></td><td>04-7127839 / <a href="https://center.chshb.gov.tw/" target="_blank">預約網站</a><br>費用：免費</td><td>無特殊限制</td></tr>
+                    <tr><td><strong>自殺防治安心專線</strong></td><td>1925 (24小時心理諮詢)<br>費用：免費</td><td>無特殊限制</td></tr>
+                    <tr><td><strong>彰化縣張老師</strong></td><td>直撥 1980<br>費用：免費</td><td>無特殊限制</td></tr>
+                    <tr><td><strong>彰化縣生命線協會</strong></td><td>04-7269995 / 直撥 1995<br>費用：免費</td><td>無特殊限制</td></tr>
+                    <tr><td><strong>全國家庭教育諮詢專線</strong></td><td>02-4128185<br>費用：免費</td><td>無特殊限制</td></tr>
+                    <tr><td><strong>兒福聯盟「踹貢少年專線」</strong></td><td>0800-001769 (周一至五 2-4PM)<br>費用：免費</td><td>13-18歲青少年</td></tr>
+                    <tr><td><strong>彰化縣學生輔導諮商中心</strong></td><td>04-8357885 (國中小學生諮商)<br>費用：免費</td><td>彰化縣國中小學生</td></tr>
+                    <tr><td><strong>彰化家庭扶助中心</strong></td><td>04-7569336 (兒少照顧輔導)<br>費用：免費</td><td>兒童青少年</td></tr>
+                    <tr><td><strong>彰化縣兒童青少年福利服務中心</strong></td><td>04-8325100 (心理協談與諮詢)<br>費用：免費</td><td>兒童青少年</td></tr>
+                    <tr><td><strong>彰化縣新住民家庭服務中心</strong></td><td>04-7237885 (關懷支持、語言翻譯)</td><td>新住民</td></tr>
+                    <tr><td><strong>男性紓壓專線</strong></td><td>0800-013999 (電話諮詢)<br>費用：免費</td><td>男性</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title">二、彰化縣心理治療所 / 諮商所資源</h2>
+        <div class="notice">※ 實際收費資訊請依各治療所官網或現場公告為主。</div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="25%">機構名稱</th>
+                        <th width="45%">地址與聯繫方式</th>
+                        <th width="30%">治療形式與費用</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>大休息心理諮商所</strong></td><td>彰化市忠孝街18號<br>04-7286358</td><td>個別/兒遊/伴侶家庭<br>2300-3500元 (50-80分)</td></tr>
+                    <tr><td><strong>四季心心理諮商所</strong></td><td>員林市浮圳路二段470號<br>0966-189708</td><td>個別/伴侶/親子<br>2000-3000元 (50-80分)</td></tr>
+                    <tr><td><strong>芙樂奇心理諮商所</strong></td><td>員林市南和街64號<br>04-8346028</td><td>個別/兒遊/伴侶婚姻<br>費用：電話洽詢</td></tr>
+                    <tr><td><strong>彰師大社區心理諮商所</strong></td><td>彰化市進德路1號<br>04-7289258</td><td>個別/家婚諮商<br>1800-3000元 (50-90分)</td></tr>
+                    <tr><td><strong>真宸心理治療所</strong></td><td>彰化市金馬路三段135號<br>0909-506501</td><td>個別/兒團/親子伴侶<br>1800-2500元 (50-60分)</td></tr>
+                    <tr><td><strong>沐昀心理治療所</strong></td><td>彰化市博愛街64號<br>04-7200060</td><td>個別/家族伴侶<br>1800-3000元 (50-70分)</td></tr>
+                    <tr><td><strong>唯心心理治療所</strong></td><td>彰化市辭修路76號<br>04-7222076</td><td>個別/親子伴侶家庭<br>2000-3200元 (50-80分)</td></tr>
+                    <tr><td><strong>未知有智心理諮商所</strong></td><td>彰化市中山路一段403號6樓<br>0926-234885</td><td>個別/伴侶婚姻/親子家庭<br>2300-3500元 (50-80分)</td></tr>
+                    <tr><td><strong>雁行心理諮商所</strong></td><td>彰化市南郭路一段361號之1<br>0908-139283</td><td>個別/伴侶家族/兒遊<br>2000-3600元 (50-90分)</td></tr>
+                    <tr><td><strong>安晴心理治療所</strong></td><td>鹿港鎮自由路301號<br>0963-682903</td><td>兒童/成人/親子諮詢<br>費用：電話洽詢</td></tr>
+                    <tr><td><strong>聽聽心裡詩心理治療所</strong></td><td>彰化市進德路79號1樓<br>04-7030677</td><td>個別/伴侶婚姻/兒童親子<br>1800-3500元 (50-80分)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title">三、中區醫療機構精神科 / 身心科</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="15%">區域</th>
+                        <th width="35%">醫院 / 診所名稱</th>
+                        <th width="50%">地址與聯繫方式</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td rowspan="4" style="background:#f9f9f9; text-align:center; font-weight:bold;">彰化縣</td><td><strong>鹿基—長青院區</strong></td><td>鹿港鎮鹿東路二段888號<br>04-7789595 / 0983-132903</td></tr>
+                    <tr><td><strong>彰濱秀傳紀念醫院</strong></td><td>彰化市中山路一段542號<br>04-7256166</td></tr>
+                    <tr><td><strong>署立彰化醫院</strong></td><td>埔心鄉中正路二段80號<br>04-8298686</td></tr>
+                    <tr><td><strong>修慧診所</strong></td><td>彰化市金馬路三段59 & 61號<br>04-7266158</td></tr>
+                    <tr><td rowspan="9" style="background:#f9f9f9; text-align:center; font-weight:bold;">台中市</td><td><strong>台中榮民總醫院</strong></td><td>台中市台灣大道四段1650號<br>04-23592525</td></tr>
+                    <tr><td><strong>澄清綜合醫院</strong></td><td>台中市台灣大道四段972號<br>04-24632000</td></tr>
+                    <tr><td><strong>衛生福利部台中醫院</strong></td><td>台中市三民路一段199號<br>04-22294411</td></tr>
+                    <tr><td><strong>中國醫藥大學附設醫院</strong></td><td>台中市育德路2號<br>04-22052121</td></tr>
+                    <tr><td><strong>維新醫院</strong></td><td>台中市育德路185號<br>04-22038585</td></tr>
+                    <tr><td><strong>中山醫學大學附設醫院</strong></td><td>台中市建國北路一段110號<br>04-24739595</td></tr>
+                    <tr><td><strong>靜和醫院</strong></td><td>台中市南屯路一段158號<br>04-23711129</td></tr>
+                    <tr><td><strong>大里仁愛醫院</strong></td><td>台中市大里區東榮路483號<br>04-24819900</td></tr>
+                    <tr><td><strong>台中慈濟醫院</strong></td><td>台中市潭子區豐興路一段66號<br>04-36060666</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="action-section">
+            <h3>📱 手機掃描快速分享</h3>
+            <p>您可以掃描下方 QR Code 隨時查看此資源表，或傳送網址給需要的親友。</p>
+            <div id="qrcode-container">
+                <div id="qrcode"></div>
+            </div>
+            <br>
+            <a href="PsyResources_CentralTW_2026.docx" class="download-btn" download>
+                📥 下載原始 Word 檔案
+            </a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 心理健康資源網 | 本表僅供參考，實際服務請洽各機構。</p>
+    </footer>
+
+    <script>
+        window.onload = function() {
+            var currentUrl = window.location.href;
+            new QRCode(document.getElementById("qrcode"), {
+                text: currentUrl,
+                width: 160,
+                height: 160,
+                colorDark : "#2c3e50",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        };
+    </script>
+</body>
+</html>
