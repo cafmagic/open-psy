@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNAP-IV 注意力缺陷過動症量表</title>
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9fa;
+            --text-color: #333333;
+            --border-color: #dddddd;
+            --accent-blue: #2c3e50;
+            --highlight: #e3f2fd;
+            --alert-color: #c0392b;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .paper {
+            background-color: var(--primary-bg);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-blue);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+
+        h1 { margin: 5px 0; font-size: 22pt; color: var(--accent-blue); }
+        .subtitle { color: #7f8c8d; font-size: 12pt; }
+
+        .instruction-box {
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 11pt;
+            background-color: var(--secondary-bg);
+        }
+
+        .info-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-group label { font-weight: bold; }
+        .info-group input, .info-group select {
+            padding: 6px; border: 1px solid #ccc; border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--secondary-bg);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td:first-child { text-align: left; width: 45%; font-size: 11pt; }
+        td:nth-child(2) { font-weight: bold; width: 5%; color: #7f8c8d; }
+
+        /* 讓整格 td 都可以點擊，適合平板觸控 */
+        td label {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+        
+        td:hover:not(:first-child):not(:nth-child(2)) {
+            background-color: var(--highlight);
+        }
+
+        input[type="radio"] {
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        .section-title {
+            background-color: #ecf0f1;
+            font-weight: bold;
+            color: var(--accent-blue);
+            text-align: left;
+            padding: 10px;
+        }
+
+        .btn-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12pt;
+            margin: 0 10px;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background-color: #1a252f; }
+        .btn-secondary { background-color: #95a5a6; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+
+        /* 結果顯示區 */
+        #result-panel {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid var(--accent-blue);
+            border-radius: 8px;
+            background: #f9fcff;
+        }
+
+        .score-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .score-info { flex: 1; }
+        .score-title { font-weight: bold; font-size: 1.1em; color: var(--accent-blue); }
+        .score-avg { color: #7f8c8d; font-size: 0.9em; margin-top: 5px;}
+
+        .score-stats { 
+            display: flex; 
+            gap: 20px; 
+            text-align: right; 
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .stat-item:first-child {
+            border-right: 1px solid #eee;
+        }
+
+        .stat-label { font-size: 0.85em; color: #7f8c8d; margin-bottom: 3px; }
+        .stat-value { font-size: 1.3em; font-weight: bold; color: var(--alert-color); }
+        .stat-value.symptom-count { color: #e67e22; }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .paper { box-shadow: none; padding: 0; max-width: 100%; }
+            .btn-group, #result-panel { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="paper">
+    <header>
+        <h1>SNAP-IV 評量表 (中文版)</h1>
+        <div class="subtitle">Swanson, Nolan, and Pelham-IV Questionnaire</div>
+    </header>
+
+    <div class="instruction-box">
+        <b>指導語：</b>以下列出了一些兒童常見的行為。請根據孩子<b>過去六個月</b>內的表現，在最符合的方格中點擊作答。
+    </div>
+
+    <div class="info-group">
+        <div><label>填寫人身分：</label> <select><option>家長 (母親)</option><option>家長 (父親)</option><option>老師</option><option>其他</option></select></div>
+    </div>
+
+    <form id="snap-form">
+        <table>
+            <thead>
+                <tr>
+                    <th>題 目</th>
+                    <th>題號</th>
+                    <th>完全沒有 (0)</th>
+                    <th>有一點 (1)</th>
+                    <th>還算多 (2)</th>
+                    <th>非常多 (3)</th>
+                </tr>
+            </thead>
+            <tbody id="question-body">
+                </tbody>
+        </table>
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('snap-form').reset(); document.getElementById('result-panel').style.display='none';">重新填寫</button>
+            <button type="button" class="btn" onclick="calculateScore()">計算分數與症狀數量</button>
+            <a href="index.html" class="btn btn-secondary">返回工具箱</a>
+        </div>
+    </form>
+
+    <div id="result-panel">
+        <h3 style="margin-top:0; color: var(--accent-blue); border-bottom: 2px solid #ccc; padding-bottom: 10px;">計分結果報告</h3>
+        
+        <div class="score-box" style="border-left-color: #3498db;">
+            <div class="score-info">
+                <div class="score-title">一、注意力不足 (Inattention)</div>
+                <div class="score-avg">共 9 題</div>
+            </div>
+            <div class="score-stats">
+                <div class="stat-item">
+                    <div class="stat-label">症狀數 (得分≥2)</div>
+                    <div class="stat-value symptom-count" id="count-inattention">0 項</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">子項目總分</div>
+                    <div class="stat-value" id="score-inattention">0 分</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="score-box" style="border-left-color: #e67e22;">
+            <div class="score-info">
+                <div class="score-title">二、過動 / 衝動 (Hyperactivity/Impulsivity)</div>
+                <div class="score-avg">共 9 題</div>
+            </div>
+            <div class="score-stats">
+                <div class="stat-item">
+                    <div class="stat-label">症狀數 (得分≥2)</div>
+                    <div class="stat-value symptom-count" id="count-hyperactivity">0 項</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">子項目總分</div>
+                    <div class="stat-value" id="score-hyperactivity">0 分</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="score-box" style="border-left-color: #e74c3c;">
+            <div class="score-info">
+                <div class="score-title">三、對立反抗 (ODD)</div>
+                <div class="score-avg">共 8 題</div>
+            </div>
+            <div class="score-stats">
+                <div class="stat-item">
+                    <div class="stat-label">症狀數 (得分≥2)</div>
+                    <div class="stat-value symptom-count" id="count-odd">0 項</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">子項目總分</div>
+                    <div class="stat-value" id="score-odd">0 分</div>
+                </div>
+            </div>
+        </div>
+        
+        <p style="font-size: 0.9em; color: #7f8c8d; text-align: justify; margin-top: 15px;">
+            * 備註：臨床上將單題得分為「2 (還算多)」或「3 (非常多)」視為一項顯著症狀。DSM-5 診斷標準中，ADHD (兒童) 需於對應維度滿足 6 項以上症狀。確切診斷仍需醫師綜合臨床會談評估。
+        </p>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        "在學校作業、日常活動中，常不注意細節或粗心犯錯",
+        "在工作或遊戲活動中，無法持續維持注意力",
+        "別人跟他說話時，常常看起來沒有在聽",
+        "常常不聽從指示，且無法完成學校作業、家事或工作",
+        "組織工作及活動有困難",
+        "逃避、討厭或不情願參與需要持續動腦的工作(如學校作業)",
+        "經常遺失工作或活動必需的東西(如玩具、聯絡簿、鉛筆)",
+        "很容易受外在刺激影響而分心",
+        "在日常生活中常忘東忘西",
+        "常常手腳動個不停或在座位上扭動",
+        "在教室或必須坐在座位上的場合，常離開座位",
+        "在不適當的場合，常常跑來跑去或爬上爬下",
+        "無法安靜地玩耍或參與休閒活動",
+        "總是不停地活動，好像「身上裝了馬達」",
+        "常常話太多",
+        "常在問題還沒問完之前就搶著回答",
+        "在遊戲或團體活動中，無法排隊或等待輪流",
+        "常常打斷或干擾別人(如插嘴或打斷別人的遊戲)",
+        "常常發脾氣",
+        "常常與大人爭辯",
+        "常常主動反抗或拒絕聽從大人的要求或規定",
+        "常常故意激怒或惹惱別人",
+        "常將自己的過錯或不當行為怪罪別人",
+        "容易被別人激怒或觸怒",
+        "常常發怒或充滿怨恨",
+        "常常懷恨在心或想報復"
+    ];
+
+    const tbody = document.getElementById('question-body');
+
+    questions.forEach((q, index) => {
+        const qNum = index + 1;
+        let sectionHeader = '';
+        
+        if (qNum === 1) sectionHeader = '<tr><td colspan="6" class="section-title">一、注意力不足 (Inattention)</td></tr>';
+        if (qNum === 10) sectionHeader = '<tr><td colspan="6" class="section-title">二、過動 / 衝動 (Hyperactivity/Impulsivity)</td></tr>';
+        if (qNum === 19) sectionHeader = '<tr><td colspan="6" class="section-title">三、對立反抗 (Oppositional Defiant Disorder)</td></tr>';
+
+        const row = `
+            ${sectionHeader}
+            <tr>
+                <td>${q}</td>
+                <td>${qNum}</td>
+                <td><label><input type="radio" name="q${qNum}" value="0"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="1"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="2"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="3"></label></td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+
+    function calculateScore() {
+        let scoreInattention = 0, countInattention = 0;
+        let scoreHyperactivity = 0, countHyperactivity = 0;
+        let scoreODD = 0, countODD = 0;
+        let missingQuestions = [];
+
+        for (let i = 1; i <= 26; i++) {
+            const radios = document.getElementsByName('q' + i);
+            let answered = false;
+            let val = 0;
+            
+            for (let radio of radios) {
+                if (radio.checked) {
+                    val = parseInt(radio.value);
+                    answered = true;
+                    break;
+                }
+            }
+
+            if (!answered) {
+                missingQuestions.push(i);
+            } else {
+                // 分別累加總分與症狀數(>=2)
+                if (i <= 9) {
+                    scoreInattention += val;
+                    if (val >= 2) countInattention++;
+                } else if (i <= 18) {
+                    scoreHyperactivity += val;
+                    if (val >= 2) countHyperactivity++;
+                } else {
+                    scoreODD += val;
+                    if (val >= 2) countODD++;
+                }
+            }
+        }
+
+        if (missingQuestions.length > 0) {
+            alert("尚有題目未作答：第 " + missingQuestions.join(", ") + " 題。\n請完成所有題目以獲得準確分數！");
+            return;
+        }
+
+        // 更新介面數值
+        document.getElementById('score-inattention').innerText = scoreInattention + " 分";
+        document.getElementById('count-inattention').innerText = countInattention + " 項";
+        
+        document.getElementById('score-hyperactivity').innerText = scoreHyperactivity + " 分";
+        document.getElementById('count-hyperactivity').innerText = countHyperactivity + " 項";
+        
+        document.getElementById('score-odd').innerText = scoreODD + " 分";
+        document.getElementById('count-odd').innerText = countODD + " 項";
+
+        const resultPanel = document.getElementById('result-panel');
+        resultPanel.style.display = 'block';
+        resultPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
