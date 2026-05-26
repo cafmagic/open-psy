@@ -98,23 +98,26 @@
             user-select: none;
         }
 
-        /* 正常/預設狀態 */
-        .options-group input[value="normal"]:checked + label {
+        /* 一般項目：正常狀態 / 特殊項目：無狀態 */
+        .options-group input[value="normal"]:checked + label,
+        .options-group input[value="none"]:checked + label {
             background: #e0e0e0;
             color: #333;
             border-color: #9e9e9e;
         }
 
-        /* 邊緣(臨界)狀態 */
-        .options-group input[value="borderline"]:checked + label {
+        /* 一般項目：邊緣(臨界)狀態 / 特殊項目：特質狀態 */
+        .options-group input[value="borderline"]:checked + label,
+        .options-group input[value="trait"]:checked + label {
             background: #fff3e0;
             color: #e65100;
             border-color: #ffb74d;
             font-weight: bold;
         }
 
-        /* 遲緩狀態 */
-        .options-group input[value="delayed"]:checked + label {
+        /* 一般項目：遲緩狀態 / 特殊項目：疾病狀態 */
+        .options-group input[value="delayed"]:checked + label,
+        .options-group input[value="disease"]:checked + label {
             background: #ffebee;
             color: #c62828;
             border-color: #e57373;
@@ -202,7 +205,7 @@
 <div class="container">
     <h1>兒童發展聯評報告生成器</h1>
     <div class="instruction">
-        請點選各項目的評估結果（預設為正常不顯示）。系統會自動組合文字並過濾重複的療育建議。
+        請點選各項目的評估結果（預設為正常/無不顯示）。系統會自動組合文字並過濾重複的療育建議。
     </div>
 
     <form id="evalForm">
@@ -224,15 +227,17 @@
 </div>
 
 <script>
-    // 定義評估項目與對應的早期療育內容
+    // 定義評估項目與對應的早期療育內容（增加 type 區分一般項目與特殊病症）
     const evalItems = [
-        { id: '口語理解', therapies: ['語言'] },
-        { id: '口語表達', therapies: ['語言'] },
-        { id: '說話異常(構音)', therapies: ['語言'] },
-        { id: '粗大動作', therapies: ['物理'] },
-        { id: '精細動作', therapies: ['職能'] },
-        { id: '認知', therapies: ['認知'] },
-        { id: '社會情緒', therapies: ['心理', '職能'] }
+        { id: '口語理解', therapies: ['語言'], type: 'standard' },
+        { id: '口語表達', therapies: ['語言'], type: 'standard' },
+        { id: '說話異常(構音)', therapies: ['語言'], type: 'standard' },
+        { id: '粗大動作', therapies: ['物理'], type: 'standard' },
+        { id: '精細動作', therapies: ['職能'], type: 'standard' },
+        { id: '認知', therapies: ['認知'], type: 'standard' },
+        { id: '社會情緒', therapies: ['心理', '職能'], type: 'standard' },
+        { id: '注意力不足過動', therapies: [], type: 'special' },
+        { id: '自閉', therapies: [], type: 'special' }
     ];
 
     // 動態生成 HTML UI
@@ -240,9 +245,12 @@
     evalItems.forEach((item, index) => {
         const row = document.createElement('div');
         row.className = 'eval-row';
-        row.innerHTML = `
-            <div class="item-name">${item.id}</div>
-            <div class="options-group">
+        
+        let optionsHtml = '';
+        
+        // 依據類別渲染不同選項
+        if (item.type === 'standard') {
+            optionsHtml = `
                 <input type="radio" id="normal_${index}" name="${item.id}" value="normal" checked>
                 <label for="normal_${index}">正常</label>
 
@@ -251,6 +259,24 @@
 
                 <input type="radio" id="delayed_${index}" name="${item.id}" value="delayed">
                 <label for="delayed_${index}">遲緩</label>
+            `;
+        } else if (item.type === 'special') {
+            optionsHtml = `
+                <input type="radio" id="none_${index}" name="${item.id}" value="none" checked>
+                <label for="none_${index}">無</label>
+
+                <input type="radio" id="trait_${index}" name="${item.id}" value="trait">
+                <label for="trait_${index}">特質</label>
+
+                <input type="radio" id="disease_${index}" name="${item.id}" value="disease">
+                <label for="disease_${index}">疾病</label>
+            `;
+        }
+
+        row.innerHTML = `
+            <div class="item-name">${item.id}</div>
+            <div class="options-group">
+                ${optionsHtml}
             </div>
         `;
         gridContainer.appendChild(row);
@@ -263,7 +289,7 @@
 
         evalItems.forEach(item => {
             const radios = document.getElementsByName(item.id);
-            let selectedValue = 'normal';
+            let selectedValue = (item.type === 'standard') ? 'normal' : 'none';
             for (let radio of radios) {
                 if (radio.checked) {
                     selectedValue = radio.value;
@@ -271,12 +297,23 @@
                 }
             }
 
-            if (selectedValue === 'borderline') {
-                textParts.push(`於${item.id}發展臨界`);
-                item.therapies.forEach(t => therapySet.add(t));
-            } else if (selectedValue === 'delayed') {
-                textParts.push(`於${item.id}發展遲緩`);
-                item.therapies.forEach(t => therapySet.add(t));
+            // 一般發展項目的文字邏輯
+            if (item.type === 'standard') {
+                if (selectedValue === 'borderline') {
+                    textParts.push(`於${item.id}發展臨界`);
+                    item.therapies.forEach(t => therapySet.add(t));
+                } else if (selectedValue === 'delayed') {
+                    textParts.push(`於${item.id}發展遲緩`);
+                    item.therapies.forEach(t => therapySet.add(t));
+                }
+            } 
+            // 注意力不足與自閉的文字邏輯（新增「具有」）
+            else if (item.type === 'special') {
+                if (selectedValue === 'trait') {
+                    textParts.push(`具有${item.id}特質`);
+                } else if (selectedValue === 'disease') {
+                    textParts.push(`具有${item.id}症`);
+                }
             }
         });
 
@@ -285,12 +322,19 @@
         const copyBtn = document.getElementById('copyBtn');
 
         if (textParts.length === 0) {
-            resultText.innerHTML = "<span style='color:#7f8c8d;'>個案發展目前均在正常範圍，無需特別建議早期療育。</span>";
+            resultText.innerHTML = "<span style='color:#7f8c8d;'>個案發展目前均在正常/無特殊範圍，無需特別建議。</span>";
             copyBtn.style.display = 'none';
         } else {
             const evalString = textParts.join('，');
-            const therapyString = Array.from(therapySet).join('、');
-            const finalString = `個案經本院聯合評估，${evalString}，建議早期療育包含${therapyString}等。`;
+            let finalString = `個案經本院聯合評估，${evalString}`;
+            
+            // 判斷是否需要加入療育建議 (防呆: 避免輸出「建議早期療育包含等。」)
+            if (therapySet.size > 0) {
+                const therapyString = Array.from(therapySet).join('、');
+                finalString += `，建議早期療育包含${therapyString}等。`;
+            } else {
+                finalString += `。`;
+            }
             
             resultText.innerText = finalString;
             copyBtn.style.display = 'block';
