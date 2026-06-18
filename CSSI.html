@@ -132,4 +132,289 @@
             line-height: 1.2;
         }
 
-        .option-label input[type="radio"]
+        .option-label input[type="radio"] {
+            transform: scale(1.3);
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* 被選取的選項樣式 */
+        .option-label.selected {
+            background-color: var(--highlight);
+            border-color: var(--accent-blue);
+            color: var(--primary-navy);
+        }
+        .option-label.selected span {
+            font-weight: bold;
+            color: var(--primary-navy);
+        }
+
+        .btn-group {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12pt;
+            margin: 0 10px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background-color: var(--primary-navy); }
+        .btn-secondary { background-color: #95a5a6; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+
+        /* 結果顯示區 */
+        #result-panel {
+            display: none;
+            margin-top: 40px;
+            padding: 25px;
+            border: 2px solid var(--primary-navy);
+            border-radius: 8px;
+            background: #fdfefe;
+        }
+
+        .result-title {
+            margin-top: 0;
+            color: var(--primary-navy);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--primary-navy);
+            color: white;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .score-number { font-size: 3.5rem; font-weight: bold; color: #f1c40f; }
+        .score-level { font-size: 1.5rem; font-weight: bold; }
+        
+        .clinical-alert {
+            display: none;
+            background-color: #fdedec;
+            border: 2px solid var(--alert-color);
+            color: var(--alert-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .interpretation-note {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border-left: 4px solid var(--accent-blue);
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .question-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .question-text { margin-bottom: 15px; }
+            .option-group { width: 100%; justify-content: space-between; }
+            .option-label { width: 18%; padding: 8px 2px; }
+            .option-label span { font-size: 0.75rem; }
+            .score-display { flex-direction: column; gap: 5px; text-align: center; }
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .paper { box-shadow: none; padding: 0; border: none; }
+            .top-utility-bar, .btn-group { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-utility-bar no-print-area">
+    <div class="top-page-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://cafmagic.github.io/open-psy/CSSI.html" alt="本頁 QR Code">
+        <span>手機掃描此頁</span>
+    </div>
+</div>
+
+<div class="paper">
+    <header>
+        <h1>兒童軀體症狀量表 (CSSI-8)</h1>
+        <div class="subtitle">Children's Somatic Symptoms Inventory-8 | OPEN-PSY</div>
+    </header>
+
+    <div class="instruction-box">
+        <b>指導語：</b>這裡列出了一些小朋友可能會有身體不舒服的情況。請想一想，你在<b>「過去兩個星期（包含今天）」</b>，有沒有這些不舒服的感覺，並且這些不舒服讓你覺得有多困擾？請選出最符合你的答案。
+    </div>
+
+    <form id="cssi-form">
+        <div id="questions-container">
+            </div>
+
+        <div class="btn-group no-print-area">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">重新填寫</button>
+            <button type="button" class="btn" onclick="calculateScore()">計算結果</button>
+            <a href="index.html" class="btn btn-secondary">返回工具箱</a>
+        </div>
+    </form>
+
+    <div id="result-panel">
+        <h3 class="result-title">臨床計分結果</h3>
+        
+        <div class="clinical-alert" id="clinical-alert-box">
+            ⚠️ 臨床警訊：總分偏高，提示個案有顯著的「軀體化困擾 (Somatic Distress)」，可能與潛在的焦慮、憂鬱或心理壓力有關，建議進一步評估。
+        </div>
+
+        <div class="score-display" id="score-bg">
+            <div>CSSI-8 總分：</div>
+            <div class="score-number" id="total-score">0</div>
+            <div class="score-level" id="severity-level"></div>
+        </div>
+
+        <div class="interpretation-note">
+            <b>【臨床判讀說明】</b><br>
+            • <b>適用年齡：</b>8 ~ 18 歲。<br>
+            • <b>計分方式：</b>總分為 32 分 (8題 × 最高4分)。分數越高代表軀體化困擾越嚴重。<br>
+            • <b>臨床意義：</b>高軀體症狀分數常與兒童/青少年的內化問題（如分離焦慮、廣泛性焦慮、憂鬱、拒學）高度相關。此簡版(CSSI-8)在評估不明原因之身體不適（如反覆頭痛、腹痛）時非常具有參考價值。<br>
+            <span style="font-size: 0.85em; color: #95a5a6;">* 註：若有特定身體疼痛，請先排除器質性疾病之可能。本量表結果僅供心理評估參考。</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // CSSI-8 題庫 (8題) - 提取自原版24題中最具代表性的軀體症狀
+    const questionsData = [
+        "1. 覺得肚子痛 (Stomachaches)",
+        "2. 覺得頭痛 (Headaches)",
+        "3. 覺得很累，或沒有力氣 (Feeling tired or having low energy)",
+        "4. 覺得想吐 (Nausea or feeling sick to your stomach)",
+        "5. 覺得心跳很快 (Heart beating fast)",
+        "6. 覺得手腳發抖 (Trembling or shaking)",
+        "7. 覺得頭暈 (Dizziness)",
+        "8. 覺得肌肉痠痛 (Muscle aches or pains)"
+    ];
+
+    const container = document.getElementById('questions-container');
+
+    // 選項文字與分數 (0-4)
+    const optionsText = ["完全沒有<br>(0分)", "有一點點<br>(1分)", "有一些<br>(2分)", "滿多的<br>(3分)", "非常多<br>(4分)"];
+
+    // 生成題目 HTML
+    questionsData.forEach((qText, index) => {
+        const qNum = index + 1;
+        let optionsHtml = '';
+        
+        optionsText.forEach((optText, optIndex) => {
+            optionsHtml += `
+                <label class="option-label" onclick="highlightSelection(this, 'q${qNum}')">
+                    <span>${optText}</span>
+                    <input type="radio" name="q${qNum}" value="${optIndex}">
+                </label>
+            `;
+        });
+
+        const cardHtml = `
+            <div class="question-card">
+                <div class="question-text">${qText}</div>
+                <div class="option-group">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+        container.innerHTML += cardHtml;
+    });
+
+    // 點擊選項時的視覺回饋
+    function highlightSelection(labelElement, groupName) {
+        const labels = document.querySelectorAll(`input[name="${groupName}"]`);
+        labels.forEach(radio => {
+            radio.closest('.option-label').classList.remove('selected');
+        });
+        labelElement.classList.add('selected');
+    }
+
+    // 重設表單
+    function resetForm() {
+        document.getElementById('cssi-form').reset();
+        document.getElementById('result-panel').style.display = 'none';
+        document.getElementById('clinical-alert-box').style.display = 'none';
+        const allLabels = document.querySelectorAll('.option-label');
+        allLabels.forEach(label => label.classList.remove('selected'));
+        document.getElementById('score-bg').style.backgroundColor = 'var(--primary-navy)';
+    }
+
+    // 計算分數
+    function calculateScore() {
+        let totalScore = 0;
+        let missingQuestions = [];
+
+        for (let i = 1; i <= 8; i++) {
+            const radios = document.getElementsByName('q' + i);
+            let answered = false;
+            
+            for (let radio of radios) {
+                if (radio.checked) {
+                    totalScore += parseInt(radio.value);
+                    answered = true;
+                    break;
+                }
+            }
+
+            if (!answered) missingQuestions.push(i);
+        }
+
+        if (missingQuestions.length > 0) {
+            alert("尚有題目未作答：第 " + missingQuestions.join(", ") + " 題。\n請確認每一題皆有勾選！");
+            return;
+        }
+
+        // 更新 UI
+        document.getElementById('total-score').innerText = totalScore;
+        
+        const alertBox = document.getElementById('clinical-alert-box');
+        const scoreBg = document.getElementById('score-bg');
+        const levelText = document.getElementById('severity-level');
+
+        // 簡單切截點判斷 (由於 CSSI-8 無絕對切截點，臨床上常以常模的 +1 SD，大約 10 分以上視為高風險，此處設為 10 供參考)
+        if (totalScore >= 10) {
+            alertBox.style.display = 'block';
+            scoreBg.style.backgroundColor = 'var(--alert-color)';
+            levelText.innerText = "(高度困擾)";
+        } else if (totalScore >= 5) {
+            alertBox.style.display = 'none';
+            scoreBg.style.backgroundColor = 'var(--warning-color)';
+            levelText.innerText = "(輕度困擾)";
+        } else {
+            alertBox.style.display = 'none';
+            scoreBg.style.backgroundColor = 'var(--success-color)';
+            levelText.innerText = "(正常範圍)";
+        }
+
+        // 顯示結果
+        const resultPanel = document.getElementById('result-panel');
+        resultPanel.style.display = 'block';
+        resultPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
