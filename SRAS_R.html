@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRAS-R 修訂版拒學評估量表 | OPEN-PSY</title>
+    <style>
+        :root {
+            --primary-navy: #2c3e50;
+            --accent-blue: #3498db;
+            --bg-gray: #f4f7f6;
+            --card-white: #ffffff;
+            --border-color: #dddddd;
+            --highlight: #e3f2fd;
+            --alert-color: #c0392b;
+            --success-color: #27ae60;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-gray);
+            color: #333333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* 頂部工具列 (左下載、右QR) */
+        .top-utility-bar {
+            max-width: 950px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .word-download-btn {
+            text-decoration: none;
+            color: var(--primary-navy);
+            font-weight: bold;
+            font-size: 10.5pt;
+            background: var(--card-white);
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .word-download-btn:hover {
+            background: #ecf0f1;
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .top-page-qr {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 8pt;
+            color: #7f8c8d;
+            background: var(--card-white);
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .top-page-qr img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 4px;
+        }
+
+        /* 主畫卷紙張 */
+        .paper {
+            background-color: var(--card-white);
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            border-top: 5px solid var(--primary-navy);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-blue);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+
+        h1 { margin: 5px 0; font-size: 22pt; color: var(--primary-navy); letter-spacing: 1px; }
+        .subtitle { color: #7f8c8d; font-size: 11pt; }
+
+        .instruction-box {
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 10.5pt;
+            background-color: #f8f9fa;
+        }
+
+        .scale-legend {
+            display: flex;
+            justify-content: space-between;
+            background: var(--primary-navy);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 10pt;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 10.5pt;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px 5px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            color: var(--primary-navy);
+        }
+
+        td:nth-child(2) { text-align: left; width: 45%; }
+        td:first-child { font-weight: bold; width: 5%; color: #7f8c8d; }
+
+        td label {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+        
+        td:hover:not(:first-child):not(:nth-child(2)) {
+            background-color: var(--highlight);
+        }
+
+        input[type="radio"] {
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        .btn-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 11.5pt;
+            margin: 0 10px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .btn:hover { background-color: var(--primary-navy); }
+        .btn-secondary { background-color: #95a5a6; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+
+        /* 結果面板 */
+        #result-panel {
+            display: none;
+            margin-top: 35px;
+            padding: 25px;
+            border: 2px solid var(--accent-blue);
+            border-radius: 8px;
+            background: #f9fcff;
+        }
+
+        .result-header {
+            margin-top: 0;
+            color: var(--primary-navy);
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .score-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .score-info { flex: 1; }
+        .score-title { font-weight: bold; font-size: 1.1em; color: var(--primary-navy); }
+        .score-desc { color: #7f8c8d; font-size: 0.9em; margin-top: 4px; }
+        
+        .score-value { 
+            font-size: 1.5em; 
+            font-weight: bold; 
+            color: var(--primary-navy);
+            width: 100px;
+            text-align: right;
+        }
+
+        .highest-score {
+            border-left-color: var(--alert-color);
+            background-color: #fffaf9;
+        }
+        .highest-score .score-value {
+            color: var(--alert-color);
+        }
+        .highest-badge {
+            display: inline-block;
+            background-color: var(--alert-color);
+            color: white;
+            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        /* 列印控制 */
+        @media print {
+            body { background: none; padding: 0; }
+            .paper { box-shadow: none; padding: 0; max-width: 100%; border: none; }
+            .btn-group, #result-panel, .no-print-area { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-utility-bar no-print-area">
+    <a href="SRAS_R_School_Refusal_Scale.docx" class="word-download-btn" download>
+        📥 下載 Word 檔 (SRAS_R)
+    </a>
+    
+    <div class="top-page-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://cafmagic.github.io/open-psy/SRAS_R.html" alt="本頁 QR Code">
+        <span>手機掃描此頁</span>
+    </div>
+</div>
+
+<div class="paper">
+    <header>
+        <h1>SRAS-R 修訂版拒學評估量表</h1>
+        <div class="subtitle">School Refusal Assessment Scale - Revised (Parent Version) | OPEN-PSY</div>
+    </header>
+
+    <div class="instruction-box">
+        <b>指導語：</b>以下列出了一些與孩子拒絕上學相關的常見情況。請根據孩子最近拒學的情形，選出最符合孩子狀況的頻率。評估目的是了解維持孩子拒學行為的主要功能，以利後續擬定介入計畫。
+    </div>
+
+    <div class="scale-legend">
+        <span>0 = 從未</span>
+        <span>1 = 極少</span>
+        <span>2 = 很少</span>
+        <span>3 = 有時</span>
+        <span>4 = 經常</span>
+        <span>5 = 幾乎總是</span>
+        <span>6 = 總是</span>
+    </div>
+
+    <form id="sras-form">
+        <table>
+            <thead>
+                <tr>
+                    <th>題號</th>
+                    <th>題目描述</th>
+                    <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+                </tr>
+            </thead>
+            <tbody id="question-body">
+                </tbody>
+        </table>
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">重新填寫</button>
+            <button type="button" class="btn" onclick="calculateScore()">計算各功能平均分數</button>
+            <a href="index.html" class="btn btn-secondary">返回工具箱</a>
+        </div>
+    </form>
+
+    <div id="result-panel">
+        <h3 class="result-header">SRAS-R 拒學行為功能分析報告</h3>
+        
+        <div class="score-box" id="box-func1">
+            <div class="score-info">
+                <div class="score-title">功能一：逃避引發負向情緒的學校刺激 <span id="badge-func1" style="display:none;" class="highest-badge">主要因素</span></div>
+                <div class="score-desc">因學校環境引發廣泛性焦慮、畏懼、憂鬱或身體不適感而拒學。</div>
+            </div>
+            <div class="score-value" id="score-func1">0.00 分</div>
+        </div>
+
+        <div class="score-box" id="box-func2">
+            <div class="score-info">
+                <div class="score-title">功能二：逃避引發社交或評價恐懼的情境 <span id="badge-func2" style="display:none;" class="highest-badge">主要因素</span></div>
+                <div class="score-desc">因害怕與同儕互動、被老師點名、考試或上台報告等社交評價而拒學。</div>
+            </div>
+            <div class="score-value" id="score-func2">0.00 分</div>
+        </div>
+
+        <div class="score-box" id="box-func3">
+            <div class="score-info">
+                <div class="score-title">功能三：追求重要他人的關注 (分離焦慮) <span id="badge-func3" style="display:none;" class="highest-badge">主要因素</span></div>
+                <div class="score-desc">為了能與父母或主要照顧者待在一起、尋求陪伴與安撫而拒學。</div>
+            </div>
+            <div class="score-value" id="score-func3">0.00 分</div>
+        </div>
+
+        <div class="score-box" id="box-func4">
+            <div class="score-info">
+                <div class="score-title">功能四：追求校外實質正向增強物 <span id="badge-func4" style="display:none;" class="highest-badge">主要因素</span></div>
+                <div class="score-desc">因為校外活動（如在家玩遊戲、睡覺、看電視或與朋友出去）較具吸引力而拒學。</div>
+            </div>
+            <div class="score-value" id="score-func4">0.00 分</div>
+        </div>
+        
+        <p style="font-size: 0.9em; color: #7f8c8d; text-align: justify; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 15px;">
+            * 臨床判讀：平均分數最高的功能項目，通常即為維持該個案拒學行為的<b>主要功能 (Primary Function)</b>。若有兩個以上項目分數相近且皆高於常態，則可能為混合型拒學，需多管齊下介入（例如同時處理社交焦慮與提供父母親職衛教）。
+        </p>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        "您的孩子會因為在學校感到悲傷、焦慮或痛苦而不想上學嗎？",
+        "您的孩子會為了避免在學校與同學互動或面對人群而待在家裡嗎？",
+        "您的孩子待在家裡是為了能和您（或主要照顧者）在一起嗎？",
+        "您的孩子不去上學時，是否都在家裡做喜歡的事情（如看電視、玩遊戲）？",
+        "您的孩子上學時會不會抱怨身體不舒服（如頭痛、胃痛）所以想回家？",
+        "您的孩子會因為害怕在別人面前表現（如考試、被老師抽問）而拒絕上學嗎？",
+        "如果您或家人待在家裡，孩子就會更想留在家裡陪伴您嗎？",
+        "您的孩子會因為覺得待在家裡或外面比較好玩而逃避上學嗎？",
+        "您的孩子會為了避免在學校感到害怕或沮喪而請假嗎？",
+        "您的孩子會因為害怕被同學取笑或欺負而不想上學嗎？",
+        "您的慢子會為了得到您更多的關注與安撫而拒絕上學嗎？",
+        "您的孩子會因為想在家睡覺或休息而拒絕上學嗎？",
+        "您的孩子會因為在學校感覺到強烈的不安感而想要回家嗎？",
+        "您的孩子會為了避免在學校必須說話或參與團體活動而逃學嗎？",
+        "您的孩子會因為不希望您離開他/她的視線而不去上學嗎？",
+        "如果不去上學，您的孩子是否大部分時間都在做自己覺得有趣的事？",
+        "如果強迫孩子上學，他/她會因為過度恐懼而哭泣或發脾氣嗎？",
+        "您的孩子會因為覺得在學校跟別人相處很困難而想留在家嗎？",
+        "您的孩子待在家裡時，會一直要求您陪伴他/她嗎？",
+        "您的孩子會因為覺得待在家比去學校輕鬆自在而不去上學嗎？",
+        "您的孩子會因為面對學校環境感到神經緊繃或恐慌而請假嗎？",
+        "您的孩子會因為害怕別人的眼光或負面評價而不去上學嗎？",
+        "您的孩子會為了能跟家人待在一起而強烈抗拒去學校嗎？",
+        "您的孩子會為了在校外做自己喜歡的事（如跟朋友去玩）而拒學嗎？"
+    ];
+
+    const tbody = document.getElementById('question-body');
+
+    questions.forEach((q, index) => {
+        const qNum = index + 1;
+        const row = `
+            <tr>
+                <td>${qNum}</td>
+                <td>${q}</td>
+                <td><label><input type="radio" name="q${qNum}" value="0"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="1"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="2"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="3"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="4"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="5"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="6"></label></td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+
+    function resetForm() {
+        document.getElementById('sras-form').reset();
+        document.getElementById('result-panel').style.display = 'none';
+        for(let i=1; i<=4; i++) {
+            document.getElementById(`box-func${i}`).classList.remove('highest-score');
+            document.getElementById(`badge-func${i}`).style.display = 'none';
+        }
+    }
+
+    function calculateScore() {
+        let scores = { f1: 0, f2: 0, f3: 0, f4: 0 };
+        let missingQuestions = [];
+
+        for (let i = 1; i <= 24; i++) {
+            const radios = document.getElementsByName('q' + i);
+            let answered = false;
+            let val = 0;
+            
+            for (let radio of radios) {
+                if (radio.checked) {
+                    val = parseInt(radio.value);
+                    answered = true;
+                    break;
+                }
+            }
+
+            if (!answered) {
+                missingQuestions.push(i);
+            } else {
+                if (i % 4 === 1) scores.f1 += val;
+                else if (i % 4 === 2) scores.f2 += val;
+                else if (i % 4 === 3) scores.f3 += val;
+                else if (i % 4 === 0) scores.f4 += val;
+            }
+        }
+
+        if (missingQuestions.length > 0) {
+            alert("尚有題目未作答：第 " + missingQuestions.join(", ") + " 題。\n請完成所有題目以獲得準確分數！");
+            return;
+        }
+
+        let averages = {
+            f1: (scores.f1 / 6).toFixed(2),
+            f2: (scores.f2 / 6).toFixed(2),
+            f3: (scores.f3 / 6).toFixed(2),
+            f4: (scores.f4 / 6).toFixed(2)
+        };
+
+        document.getElementById('score-func1').innerText = averages.f1 + " 分";
+        document.getElementById('score-func2').innerText = averages.f2 + " 分";
+        document.getElementById('score-func3').innerText = averages.f3 + " 分";
+        document.getElementById('score-func4').innerText = averages.f4 + " 分";
+
+        let maxAvg = Math.max(averages.f1, averages.f2, averages.f3, averages.f4);
+        
+        for(let i=1; i<=4; i++) {
+            let box = document.getElementById(`box-func${i}`);
+            let badge = document.getElementById(`badge-func${i}`);
+            
+            box.classList.remove('highest-score');
+            badge.style.display = 'none';
+
+            if (averages[`f${i}`] == maxAvg && maxAvg > 0) {
+                box.classList.add('highest-score');
+                badge.style.display = 'inline-block';
+            }
+        }
+
+        const resultPanel = document.getElementById('result-panel');
+        resultPanel.style.display = 'block';
+        resultPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
