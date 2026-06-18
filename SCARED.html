@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCARED 兒童焦慮情緒障礙篩查表 | OPEN-PSY</title>
+    <style>
+        :root {
+            --primary-navy: #2c3e50;
+            --accent-blue: #3498db;
+            --bg-gray: #f4f7f6;
+            --card-white: #ffffff;
+            --border-color: #dddddd;
+            --highlight: #e3f2fd;
+            --alert-color: #c0392b;
+            --success-color: #27ae60;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-gray);
+            color: #333333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* 頂部工具列 */
+        .top-utility-bar {
+            max-width: 950px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .top-page-qr {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 8pt;
+            color: #7f8c8d;
+            background: var(--card-white);
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .top-page-qr img { width: 80px; height: 80px; margin-bottom: 4px; }
+
+        /* 主畫卷紙張 */
+        .paper {
+            background-color: var(--card-white);
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            border-top: 5px solid var(--primary-navy);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-blue);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+
+        h1 { margin: 5px 0; font-size: 22pt; color: var(--primary-navy); letter-spacing: 1px; }
+        .subtitle { color: #7f8c8d; font-size: 11pt; }
+
+        .instruction-box {
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 10.5pt;
+            background-color: #f8f9fa;
+        }
+
+        .scale-legend {
+            display: flex;
+            justify-content: space-around;
+            background: var(--primary-navy);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 11pt;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 11pt;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            color: var(--primary-navy);
+        }
+
+        td:nth-child(2) { text-align: left; width: 55%; }
+        td:first-child { font-weight: bold; width: 5%; color: #7f8c8d; }
+
+        td label {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+        
+        td:hover:not(:first-child):not(:nth-child(2)) {
+            background-color: var(--highlight);
+        }
+
+        input[type="radio"] {
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        /* 題目分色區塊 (每10題換底色增加易讀性) */
+        tbody tr:nth-child(10n+1) td,
+        tbody tr:nth-child(10n+2) td,
+        tbody tr:nth-child(10n+3) td,
+        tbody tr:nth-child(10n+4) td,
+        tbody tr:nth-child(10n+5) td {
+            background-color: #ffffff;
+        }
+        
+        tbody tr:nth-child(10n+6) td,
+        tbody tr:nth-child(10n+7) td,
+        tbody tr:nth-child(10n+8) td,
+        tbody tr:nth-child(10n+9) td,
+        tbody tr:nth-child(10n+10) td {
+            background-color: #fafbfc;
+        }
+
+        .btn-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 11.5pt;
+            margin: 0 10px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .btn:hover { background-color: var(--primary-navy); }
+        .btn-secondary { background-color: #95a5a6; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+
+        /* 結果面板 */
+        #result-panel {
+            display: none;
+            margin-top: 35px;
+            padding: 25px;
+            border: 2px solid var(--accent-blue);
+            border-radius: 8px;
+            background: #f9fcff;
+        }
+
+        .result-header {
+            margin-top: 0;
+            color: var(--primary-navy);
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-score-box {
+            background: var(--primary-navy);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .total-score-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #f1c40f;
+            margin-left: 10px;
+        }
+
+        .score-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .score-info { flex: 1; }
+        .score-title { font-weight: bold; font-size: 1.05em; color: var(--primary-navy); }
+        .score-desc { color: #7f8c8d; font-size: 0.85em; margin-top: 4px; }
+        
+        .score-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .score-cutoff {
+            font-size: 0.85em;
+            color: #95a5a6;
+        }
+
+        .score-value { 
+            font-size: 1.4em; 
+            font-weight: bold; 
+            color: var(--primary-navy);
+            width: 60px;
+            text-align: right;
+        }
+
+        /* 臨床顯著標示 */
+        .clinical-alert {
+            border-left-color: var(--alert-color);
+            background-color: #fffaf9;
+        }
+        .clinical-alert .score-value {
+            color: var(--alert-color);
+        }
+        
+        .alert-badge {
+            background-color: var(--alert-color);
+            color: white;
+            font-size: 0.75em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            vertical-align: text-bottom;
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .paper { box-shadow: none; padding: 0; max-width: 100%; border: none; }
+            .btn-group, #result-panel, .top-utility-bar { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-utility-bar">
+    <div class="top-page-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://cafmagic.github.io/open-psy/SCARED.html" alt="本頁 QR Code">
+        <span>手機掃描此頁</span>
+    </div>
+</div>
+
+<div class="paper">
+    <header>
+        <h1>SCARED 兒童焦慮情緒障礙篩查表</h1>
+        <div class="subtitle">Screen for Child Anxiety Related Disorders (41 Items) | OPEN-PSY</div>
+    </header>
+
+    <div class="instruction-box">
+        <b>指導語：</b>以下是一些兒童和青少年常見的情緒與感覺。請根據孩子在<b>「過去三個月內」</b>的實際情況，選出最符合的頻率。評估結果將協助醫師判斷是否具有特定焦慮疾患之傾向。
+    </div>
+
+    <div class="scale-legend">
+        <span>0 = 幾乎沒有 (Not True)</span>
+        <span>1 = 有時有 (Somewhat True)</span>
+        <span>2 = 經常有 (Very True)</span>
+    </div>
+
+    <form id="scared-form">
+        <table>
+            <thead>
+                <tr>
+                    <th>題號</th>
+                    <th>題目描述</th>
+                    <th width="15%">0<br>(幾乎沒有)</th>
+                    <th width="15%">1<br>(有時有)</th>
+                    <th width="15%">2<br>(經常有)</th>
+                </tr>
+            </thead>
+            <tbody id="question-body">
+                </tbody>
+        </table>
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">重新填寫</button>
+            <button type="button" class="btn" onclick="calculateScore()">計算結果與分析</button>
+            <a href="index.html" class="btn btn-secondary">返回工具箱</a>
+        </div>
+    </form>
+
+    <div id="result-panel">
+        <h3 class="result-header">
+            <span>SCARED 臨床計分結果報告</span>
+        </h3>
+        
+        <div class="total-score-box" id="box-total">
+            總焦慮指標 (Total Score): <span class="total-score-value" id="score-total">0</span> 分
+            <div style="font-size: 0.85em; font-weight: normal; margin-top: 5px;" id="total-desc">
+                * 總分 ≥ 25 分，提示可能有焦慮相關疾患
+            </div>
+        </div>
+
+        <div class="score-box" id="box-panic">
+            <div class="score-info">
+                <div class="score-title">1. 恐慌症 / 身體化症狀 (Somatic/Panic) <span id="badge-panic" style="display:none;" class="alert-badge">達臨床顯著</span></div>
+                <div class="score-desc">包含心悸、暈眩、呼吸困難等身體焦慮症狀。</div>
+            </div>
+            <div class="score-stats">
+                <div class="score-cutoff">切截點: ≥ 7分</div>
+                <div class="score-value" id="score-panic">0</div>
+            </div>
+        </div>
+
+        <div class="score-box" id="box-gad">
+            <div class="score-info">
+                <div class="score-title">2. 廣泛性焦慮症 (General Anxiety) <span id="badge-gad" style="display:none;" class="alert-badge">達臨床顯著</span></div>
+                <div class="score-desc">過度擔心未來的事件、別人的看法或自己的表現。</div>
+            </div>
+            <div class="score-stats">
+                <div class="score-cutoff">切截點: ≥ 9分</div>
+                <div class="score-value" id="score-gad">0</div>
+            </div>
+        </div>
+
+        <div class="score-box" id="box-sad">
+            <div class="score-info">
+                <div class="score-title">3. 分離性焦慮症 (Separation Anxiety) <span id="badge-sad" style="display:none;" class="alert-badge">達臨床顯著</span></div>
+                <div class="score-desc">對於離開父母或主要照顧者感到極度恐懼與不安。</div>
+            </div>
+            <div class="score-stats">
+                <div class="score-cutoff">切截點: ≥ 5分</div>
+                <div class="score-value" id="score-sad">0</div>
+            </div>
+        </div>
+
+        <div class="score-box" id="box-soc">
+            <div class="score-info">
+                <div class="score-title">4. 社交焦慮症 (Social Anxiety) <span id="badge-soc" style="display:none;" class="alert-badge">達臨床顯著</span></div>
+                <div class="score-desc">害怕與陌生人互動或在他人面前表現會感到害羞與緊張。</div>
+            </div>
+            <div class="score-stats">
+                <div class="score-cutoff">切截點: ≥ 8分</div>
+                <div class="score-value" id="score-soc">0</div>
+            </div>
+        </div>
+
+        <div class="score-box" id="box-school">
+            <div class="score-info">
+                <div class="score-title">5. 懼學症 / 學校畏懼 (School Avoidance) <span id="badge-school" style="display:none;" class="alert-badge">達臨床顯著</span></div>
+                <div class="score-desc">對去學校感到極度恐懼，甚至伴隨身體不適。</div>
+            </div>
+            <div class="score-stats">
+                <div class="score-cutoff">切截點: ≥ 3分</div>
+                <div class="score-value" id="score-school">0</div>
+            </div>
+        </div>
+        
+        <p style="font-size: 0.9em; color: #7f8c8d; text-align: justify; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc;">
+            * 臨床備註：達到切截點（Cut-off）提示該項焦慮維度具有高風險，但最終診斷仍需結合精神科醫師之臨床會談與 DSM-5 診斷準則。
+        </p>
+    </div>
+</div>
+
+<script>
+    // 台灣臨床版 SCARED 41 題題庫
+    const questions = [
+        "當我感到害怕時，我會覺得無法呼吸。",
+        "我在學校會頭痛。",
+        "我不喜歡和我不認識的人在一起。",
+        "當我不在父母(或照顧者)身邊時，我就會害怕或睡不著。",
+        "我會擔心別人會不喜歡我。",
+        "當我感到害怕時，我就會暈倒(或覺得快要暈倒)。",
+        "我是個容易緊張的人。",
+        "我會跟著我的父母去任何地方。",
+        "大家都說我看起來很緊張。",
+        "我和剛認識的人在一起會感到緊張。",
+        "我在學校會肚子痛。",
+        "當我感到害怕時，我會覺得自己好像瘋了。",
+        "我擔心我會被迫離開父母。",
+        "我擔心會發生不好的事情。",
+        "當我感到害怕時，我會覺得事情都不是真實的。",
+        "我會做父母離開我的惡夢。",
+        "我在去學校的路上會感到擔心或害怕。",
+        "當我感到害怕時，我的心會跳得很快。",
+        "我會發抖。",
+        "我會做一些不好的事情發生在我父母身上的惡夢。",
+        "我擔心事情對我來說會變得很糟糕。",
+        "當我感到害怕時，我會流很多汗。",
+        "我是個太容易擔心的人。",
+        "沒有任何理由，我就會覺得非常害怕。",
+        "我害怕單獨一個人待在家裡。",
+        "和不認識的人講話我會覺得有困難。",
+        "當我感到害怕時，我覺得自己好像快要窒息了。",
+        "大家都說我太容易擔心了。",
+        "我不喜歡離開我的家人。",
+        "我害怕會恐慌發作(突然覺得非常害怕)。",
+        "我擔心父母會發生什麼不好的事。",
+        "在一群人面前我會覺得害羞。",
+        "我擔心明天會發生什麼事。",
+        "當我感到害怕時，我會覺得想吐(噁心或嘔吐)。",
+        "我擔心自己會做得不夠好。",
+        "我去學校會感到害怕。",
+        "我會擔心已經過去的事情。",
+        "當我感到害怕時，我會覺得頭暈。",
+        "當我需要在一群人面前做事(例如：說話、閱讀、玩遊戲)時，我會感到緊張。",
+        "去參加派對我會覺得緊張。",
+        "我是個害羞的人。"
+    ];
+
+    // SCARED 子量表題號對照 (以 1 為起始)
+    const subscales = {
+        panic: [1, 6, 9, 12, 15, 18, 19, 22, 24, 27, 30, 34, 38], // 驚恐/身體化
+        gad: [5, 7, 14, 21, 23, 28, 33, 35, 37],                 // 廣泛性焦慮
+        sad: [4, 8, 13, 16, 20, 25, 29, 31],                     // 分離性焦慮
+        soc: [3, 10, 26, 32, 39, 40, 41],                        // 社交焦慮
+        school: [2, 11, 17, 36]                                  // 學校畏懼
+    };
+
+    // 切截點設定
+    const cutoffs = {
+        total: 25,
+        panic: 7,
+        gad: 9,
+        sad: 5,
+        soc: 8,
+        school: 3
+    };
+
+    const tbody = document.getElementById('question-body');
+
+    // 動態渲染題目
+    questions.forEach((q, index) => {
+        const qNum = index + 1;
+        const row = `
+            <tr>
+                <td>${qNum}</td>
+                <td>${q}</td>
+                <td><label><input type="radio" name="q${qNum}" value="0"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="1"></label></td>
+                <td><label><input type="radio" name="q${qNum}" value="2"></label></td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+
+    function resetForm() {
+        document.getElementById('scared-form').reset();
+        document.getElementById('result-panel').style.display = 'none';
+        
+        // 移除所有警告標示
+        const boxes = ['total', 'panic', 'gad', 'sad', 'soc', 'school'];
+        boxes.forEach(id => {
+            let el = document.getElementById(`box-${id}`);
+            if (el) el.classList.remove('clinical-alert');
+            let badge = document.getElementById(`badge-${id}`);
+            if (badge) badge.style.display = 'none';
+        });
+        document.getElementById('box-total').style.backgroundColor = 'var(--primary-navy)';
+    }
+
+    function calculateScore() {
+        let scores = { total: 0, panic: 0, gad: 0, sad: 0, soc: 0, school: 0 };
+        let missingQuestions = [];
+
+        // 計算分數
+        for (let i = 1; i <= 41; i++) {
+            const radios = document.getElementsByName('q' + i);
+            let answered = false;
+            let val = 0;
+            
+            for (let radio of radios) {
+                if (radio.checked) {
+                    val = parseInt(radio.value);
+                    answered = true;
+                    break;
+                }
+            }
+
+            if (!answered) {
+                missingQuestions.push(i);
+            } else {
+                scores.total += val;
+                if (subscales.panic.includes(i)) scores.panic += val;
+                if (subscales.gad.includes(i)) scores.gad += val;
+                if (subscales.sad.includes(i)) scores.sad += val;
+                if (subscales.soc.includes(i)) scores.soc += val;
+                if (subscales.school.includes(i)) scores.school += val;
+            }
+        }
+
+        // 缺答防呆
+        if (missingQuestions.length > 0) {
+            alert("尚有題目未作答：第 " + missingQuestions.join(", ") + " 題。\n請完成所有 41 題以獲得準確分數！");
+            return;
+        }
+
+        // 更新介面分數
+        document.getElementById('score-total').innerText = scores.total;
+        document.getElementById('score-panic').innerText = scores.panic;
+        document.getElementById('score-gad').innerText = scores.gad;
+        document.getElementById('score-sad').innerText = scores.sad;
+        document.getElementById('score-soc').innerText = scores.soc;
+        document.getElementById('score-school').innerText = scores.school;
+
+        // 判斷切截點並標示
+        const checkCutoff = (key) => {
+            let box = document.getElementById(`box-${key}`);
+            let badge = document.getElementById(`badge-${key}`);
+            
+            if (scores[key] >= cutoffs[key]) {
+                if(key === 'total') {
+                    box.style.backgroundColor = 'var(--alert-color)';
+                } else {
+                    box.classList.add('clinical-alert');
+                    badge.style.display = 'inline-block';
+                }
+            } else {
+                if(key === 'total') {
+                    box.style.backgroundColor = 'var(--primary-navy)';
+                } else {
+                    box.classList.remove('clinical-alert');
+                    badge.style.display = 'none';
+                }
+            }
+        };
+
+        checkCutoff('total');
+        checkCutoff('panic');
+        checkCutoff('gad');
+        checkCutoff('sad');
+        checkCutoff('soc');
+        checkCutoff('school');
+
+        // 顯示面板並平滑捲動
+        const resultPanel = document.getElementById('result-panel');
+        resultPanel.style.display = 'block';
+        resultPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
