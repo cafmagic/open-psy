@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSRSC 兒童抑鬱自評量表 | OPEN-PSY</title>
+    <style>
+        :root {
+            --primary-navy: #2c3e50;
+            --accent-blue: #3498db;
+            --bg-gray: #f4f7f6;
+            --card-white: #ffffff;
+            --border-color: #dddddd;
+            --highlight: #e3f2fd;
+            --alert-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #27ae60;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-gray);
+            color: #333333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .top-utility-bar {
+            max-width: 850px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .top-page-qr {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 8pt;
+            color: #7f8c8d;
+            background: var(--card-white);
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .top-page-qr img { width: 80px; height: 80px; margin-bottom: 4px; }
+
+        .paper {
+            background-color: var(--card-white);
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            border-top: 5px solid var(--primary-navy);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-blue);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+
+        h1 { margin: 5px 0; font-size: 22pt; color: var(--primary-navy); }
+        .subtitle { color: #7f8c8d; font-size: 11pt; }
+
+        .instruction-box {
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 11pt;
+            background-color: #f8f9fa;
+        }
+
+        /* 題目區塊樣式 - 適合兒童閱讀的大字體 */
+        .question-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-navy);
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .option-group {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .option-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 80px;
+            text-align: center;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight);
+            border-color: #90caf9;
+        }
+
+        .option-label span {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .option-label input[type="radio"] {
+            transform: scale(1.3);
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* 被選取的選項樣式 */
+        .option-label.selected {
+            background-color: var(--highlight);
+            border-color: var(--accent-blue);
+            color: var(--primary-navy);
+        }
+        .option-label.selected span {
+            font-weight: bold;
+            color: var(--primary-navy);
+        }
+
+        .btn-group {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12pt;
+            margin: 0 10px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background-color: var(--primary-navy); }
+        .btn-secondary { background-color: #95a5a6; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+
+        /* 結果顯示區 */
+        #result-panel {
+            display: none;
+            margin-top: 40px;
+            padding: 25px;
+            border: 2px solid var(--primary-navy);
+            border-radius: 8px;
+            background: #fdfefe;
+        }
+
+        .result-title {
+            margin-top: 0;
+            color: var(--primary-navy);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--primary-navy);
+            color: white;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .score-number { font-size: 3.5rem; font-weight: bold; color: #f1c40f; }
+        .score-level { font-size: 1.5rem; font-weight: bold; }
+        
+        .clinical-alert {
+            display: none;
+            background-color: #fdedec;
+            border: 2px solid var(--alert-color);
+            color: var(--alert-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .interpretation-note {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border-left: 4px solid var(--accent-blue);
+            line-height: 1.8;
+        }
+
+        @media (max-width: 600px) {
+            .question-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .question-text { margin-bottom: 15px; }
+            .option-group { width: 100%; justify-content: space-between; }
+            .option-label { width: 30%; padding: 8px 5px; }
+            .option-label span { font-size: 0.9rem; }
+            .score-display { flex-direction: column; gap: 5px; text-align: center; }
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .paper { box-shadow: none; padding: 0; border: none; }
+            .top-utility-bar, .btn-group { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-utility-bar no-print-area">
+    <div class="top-page-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://cafmagic.github.io/open-psy/DSRSC.html" alt="本頁 QR Code">
+        <span>手機掃描此頁</span>
+    </div>
+</div>
+
+<div class="paper">
+    <header>
+        <h1>兒童抑鬱自評量表 (DSRSC)</h1>
+        <div class="subtitle">Depression Self-Rating Scale for Children | OPEN-PSY</div>
+    </header>
+
+    <div class="instruction-box">
+        <b>指導語：</b>這裡有一些句子是描述小朋友可能會有的感覺。請仔細讀每一個句子，然後想一想你在<b>「過去一個星期」</b>是不是有這種感覺。請選出最符合你的答案。
+    </div>
+
+    <form id="dsrsc-form">
+        <div id="questions-container">
+            </div>
+
+        <div class="btn-group no-print-area">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">重新填寫</button>
+            <button type="button" class="btn" onclick="calculateScore()">計算結果</button>
+            <a href="index.html" class="btn btn-secondary">返回工具箱</a>
+        </div>
+    </form>
+
+    <div id="result-panel">
+        <h3 class="result-title">臨床計分結果</h3>
+        
+        <div class="clinical-alert" id="clinical-alert-box">
+            ⚠️ 臨床警訊：總分大於等於 15 分，提示可能有顯著的憂鬱情緒或憂鬱症傾向，建議進行深入臨床評估。
+        </div>
+
+        <div class="score-display" id="score-bg">
+            <div>DSRSC 總分：</div>
+            <div class="score-number" id="total-score">0</div>
+            <div class="score-level" id="severity-level"></div>
+        </div>
+
+        <div class="interpretation-note">
+            <b>【臨床判讀說明】</b><br>
+            • <b>適用年齡：</b>7 ~ 13 歲兒童。<br>
+            • <b>計分方式：</b>總分為 36 分。系統已自動處理正向題與負向題的反向計分邏輯。<br>
+            • <b>切截點 (Cut-off)：</b>臨床上通常以 <b>15 分</b>（或大於15分）作為篩檢出憂鬱症兒童的臨界值。<br>
+            <span style="font-size: 0.85em; color: #95a5a6;">* 註：自評量表結果僅供參考，不能直接作為精神科診斷依據。</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // DSRSC 題庫 (18題) 與計分方向 (type)
+    // type: 'negative' (負向症狀): 從來沒有=0, 有時候=1, 經常=2
+    // type: 'positive' (正向特質, 反向計分): 從來沒有=2, 有時候=1, 經常=0
+    const questionsData = [
+        { text: "1. 我覺得期待有趣的事情發生。", type: "positive" },
+        { text: "2. 我覺得晚上很難睡得著。", type: "negative" },
+        { text: "3. 我覺得難過或悲傷。", type: "negative" },
+        { text: "4. 我覺得想睡覺。", type: "negative" },
+        { text: "5. 我覺得不想吃東西。", type: "negative" },
+        { text: "6. 我想出去玩。", type: "positive" },
+        { text: "7. 我覺得想哭。", type: "negative" },
+        { text: "8. 我覺得去學校上學很好玩。", type: "positive" },
+        { text: "9. 我覺得肚子痛。", type: "negative" },
+        { text: "10. 我覺得沒有人愛我。", type: "negative" },
+        { text: "11. 我覺得不想跟別人說話。", type: "negative" },
+        { text: "12. 我喜歡和其他小朋友一起玩。", type: "positive" },
+        { text: "13. 我會做不好的夢或惡夢。", type: "negative" },
+        { text: "14. 我覺得孤單。", type: "negative" },
+        { text: "15. 我覺得生活很無聊。", type: "negative" },
+        { text: "16. 我喜歡看電視。", type: "positive" },
+        { text: "17. 我覺得我很棒 (有很多優點)。", type: "positive" },
+        { text: "18. 我覺得我做錯事了。", type: "negative" }
+    ];
+
+    const container = document.getElementById('questions-container');
+
+    // 生成題目 HTML
+    questionsData.forEach((q, index) => {
+        const qNum = index + 1;
+        let optionsHtml = '';
+        
+        // 選項文字
+        const optionsText = ["從來沒有", "有時候", "經常"];
+        
+        optionsText.forEach((optText, optIndex) => {
+            optionsHtml += `
+                <label class="option-label" onclick="highlightSelection(this, 'q${qNum}')">
+                    <span>${optText}</span>
+                    <input type="radio" name="q${qNum}" value="${optIndex}" data-type="${q.type}">
+                </label>
+            `;
+        });
+
+        const cardHtml = `
+            <div class="question-card">
+                <div class="question-text">${q.text}</div>
+                <div class="option-group">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+        container.innerHTML += cardHtml;
+    });
+
+    // 點擊選項時的視覺回饋
+    function highlightSelection(labelElement, groupName) {
+        const labels = document.querySelectorAll(`input[name="${groupName}"]`);
+        labels.forEach(radio => {
+            radio.closest('.option-label').classList.remove('selected');
+        });
+        labelElement.classList.add('selected');
+    }
+
+    // 重設表單
+    function resetForm() {
+        document.getElementById('dsrsc-form').reset();
+        document.getElementById('result-panel').style.display = 'none';
+        document.getElementById('clinical-alert-box').style.display = 'none';
+        const allLabels = document.querySelectorAll('.option-label');
+        allLabels.forEach(label => label.classList.remove('selected'));
+        document.getElementById('score-bg').style.backgroundColor = 'var(--primary-navy)';
+    }
+
+    // 計算分數
+    function calculateScore() {
+        let totalScore = 0;
+        let missingQuestions = [];
+
+        for (let i = 1; i <= 18; i++) {
+            const radios = document.getElementsByName('q' + i);
+            let answered = false;
+            
+            for (let radio of radios) {
+                if (radio.checked) {
+                    const val = parseInt(radio.value);
+                    const qType = radio.getAttribute('data-type');
+                    
+                    // 計分邏輯
+                    if (qType === 'negative') {
+                        // 負向題：從來沒有(0)=0, 有時候(1)=1, 經常(2)=2
+                        totalScore += val;
+                    } else if (qType === 'positive') {
+                        // 正向題：從來沒有(0)=2, 有時候(1)=1, 經常(2)=0
+                        totalScore += (2 - val);
+                    }
+                    
+                    answered = true;
+                    break;
+                }
+            }
+
+            if (!answered) missingQuestions.push(i);
+        }
+
+        if (missingQuestions.length > 0) {
+            alert("尚有題目未作答：第 " + missingQuestions.join(", ") + " 題。\n請確認每一題皆有勾選！");
+            return;
+        }
+
+        // 更新 UI
+        document.getElementById('total-score').innerText = totalScore;
+        
+        const alertBox = document.getElementById('clinical-alert-box');
+        const scoreBg = document.getElementById('score-bg');
+        const levelText = document.getElementById('severity-level');
+
+        // 切截點判斷 (>= 15)
+        if (totalScore >= 15) {
+            alertBox.style.display = 'block';
+            scoreBg.style.backgroundColor = 'var(--alert-color)';
+            levelText.innerText = "(達臨床顯著)";
+        } else {
+            alertBox.style.display = 'none';
+            scoreBg.style.backgroundColor = 'var(--success-color)';
+            levelText.innerText = "(正常範圍)";
+        }
+
+        // 顯示結果
+        const resultPanel = document.getElementById('result-panel');
+        resultPanel.style.display = 'block';
+        resultPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
