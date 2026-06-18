@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDI-II 貝克憂鬱量表 | OPEN-PSY</title>
+    <style>
+        :root {
+            --primary-navy: #2c3e50;
+            --accent-blue: #3498db;
+            --bg-gray: #f4f7f6;
+            --card-white: #ffffff;
+            --border-color: #dddddd;
+            --highlight: #e3f2fd;
+            --alert-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #27ae60;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-gray);
+            color: #333333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .top-utility-bar {
+            max-width: 850px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .top-page-qr {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 8pt;
+            color: #7f8c8d;
+            background: var(--card-white);
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .top-page-qr img { width: 80px; height: 80px; margin-bottom: 4px; }
+
+        .paper {
+            background-color: var(--card-white);
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            border-top: 5px solid var(--primary-navy);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-blue);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+
+        h1 { margin: 5px 0; font-size: 22pt; color: var(--primary-navy); }
+        .subtitle { color: #7f8c8d; font-size: 11pt; }
+
+        .instruction-box {
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 11pt;
+            background-color: #f8f9fa;
+        }
+
+        /* 題目區塊樣式 */
+        .question-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .question-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: var(--primary-navy);
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 10px;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 10.5pt;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight);
+            border-color: #90caf9;
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        /* 被選取的選項樣式 */
+        .option-label.selected {
+            background-color: var(--highlight);
+            border-color: var(--accent-blue);
+            font-weight: bold;
+            color: var(--primary-navy);
+        }
+
+        .btn-group {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12pt;
+            margin: 0 10px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background-color: var(--primary-navy); }
+        .btn-secondary { background-color: #95a5a6; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+
+        /* 結果顯示區 */
+        #result-panel {
+            display: none;
+            margin-top: 40px;
+            padding: 25px;
+            border: 2px solid var(--primary-navy);
+            border-radius: 8px;
+            background: #fdfefe;
+        }
+
+        .result-title {
+            margin-top: 0;
+            color: var(--primary-navy);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--primary-navy);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .score-number { font-size: 3rem; font-weight: bold; color: #f1c40f; }
+        .score-level { font-size: 1.5rem; font-weight: bold; }
+
+        .suicide-alert {
+            display: none;
+            background-color: #fdedec;
+            border: 2px solid var(--alert-color);
+            color: var(--alert-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .interpretation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 10pt;
+        }
+        .interpretation-table th, .interpretation-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .interpretation-table th { background-color: #f4f6f6; }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .paper { box-shadow: none; padding: 0; border: none; }
+            .top-utility-bar, .btn-group { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-utility-bar no-print-area">
+    <div class="top-page-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://cafmagic.github.io/open-psy/BDI_II.html" alt="本頁 QR Code">
+        <span>手機掃描此頁</span>
+    </div>
+</div>
+
+<div class="paper">
+    <header>
+        <h1>貝克憂鬱量表 (BDI-II)</h1>
+        <div class="subtitle">Beck Depression Inventory, 2nd Edition | OPEN-PSY</div>
+    </header>
+
+    <div class="instruction-box">
+        <b>指導語：</b>這份問卷包含 21 個題組。請仔細閱讀每一題組的所有選項，然後在每一題組中選出一個最能代表您<b>「過去兩週內（包含今天）」</b>真實感受的句子。
+    </div>
+
+    <form id="bdi-form">
+        <div id="questions-container">
+            </div>
+
+        <div class="btn-group no-print-area">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">重新填寫</button>
+            <button type="button" class="btn" onclick="calculateScore()">計算結果</button>
+            <a href="index.html" class="btn btn-secondary">返回工具箱</a>
+        </div>
+    </form>
+
+    <div id="result-panel">
+        <h3 class="result-title">臨床計分與嚴重度評估</h3>
+        
+        <div class="suicide-alert" id="suicide-alert-box">
+            ⚠️ 臨床警訊：個案在「第9題：自殺想法」中得分大於0，具備潛在自我傷害風險，建議立即進行深入的臨床安全評估。
+        </div>
+
+        <div class="score-display">
+            <div>BDI-II 總得分：</div>
+            <div class="score-number" id="total-score">0</div>
+            <div class="score-level" id="severity-level"></div>
+        </div>
+
+        <table class="interpretation-table">
+            <tr>
+                <th>分數範圍</th>
+                <th>臨床意義 (嚴重度)</th>
+            </tr>
+            <tr><td>0 - 13 分</td><td>微小 (Minimal)</td></tr>
+            <tr><td>14 - 19 分</td><td>輕度 (Mild)</td></tr>
+            <tr><td>20 - 28 分</td><td>中度 (Moderate)</td></tr>
+            <tr><td>29 - 63 分</td><td>重度 (Severe)</td></tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    // BDI-II 題庫 (21題)
+    const questionsData = [
+        { title: "1. 悲傷", options: ["我沒有覺得悲傷。", "我經常覺得悲傷。", "我一直覺得悲傷，而且無法釋懷。", "我悲傷或不快樂到無法忍受的地步。"] },
+        { title: "2. 悲觀", options: ["我對未來不會覺得灰心。", "我對未來感到灰心。", "我覺得未來沒有什麼好期待的。", "我覺得未來毫無希望，情況也不可能改善。"] },
+        { title: "3. 過去的失敗", options: ["我不覺得自己是個失敗者。", "我覺得自己比一般人經歷過更多失敗。", "回首往事，我看到的盡是一連串的失敗。", "我覺得自己是一個徹底失敗的人。"] },
+        { title: "4. 失去快樂", options: ["我能像過去一樣享受我喜歡的事物。", "我對事物的享受不如從前。", "我對過去喜歡的事物幾乎失去樂趣。", "我對過去喜歡的事物完全失去樂趣。"] },
+        { title: "5. 罪惡感", options: ["我沒有什麼特別的罪惡感。", "我在很多事情上覺得有罪惡感。", "我大部分時間都覺得有罪惡感。", "我隨時隨地都覺得有罪惡感。"] },
+        { title: "6. 受懲罰感", options: ["我不覺得自己正在受懲罰。", "我覺得自己可能會受懲罰。", "我預期自己會受懲罰。", "我覺得自己正在受懲罰。"] },
+        { title: "7. 討厭自己", options: ["我對自己的感覺跟過去一樣。", "我對自己失去信心。", "我對自己感到失望。", "我討厭我自己。"] },
+        { title: "8. 自我批評", options: ["我不覺得自己比別人差或做錯事。", "我常為自己的弱點或錯誤批評自己。", "我常為發生的每一件錯事責怪自己。", "我把所有不好的事情都怪在自己身上。"] },
+        { title: "9. 自殺的想法或願望", options: ["我完全沒有自殺的想法。", "我有自殺的想法，但我不會去做。", "我想要自殺。", "如果機會來了，我會去自殺。"] },
+        { title: "10. 哭泣", options: ["我沒有比過去更常哭。", "我現在比過去常哭。", "我現在動不動就哭。", "我想哭，卻哭不出來。"] },
+        { title: "11. 焦躁不安", options: ["我沒有覺得比過去焦躁不安。", "我覺得比過去焦躁不安。", "我焦躁不安到很難安靜坐著。", "我非常焦躁不安，必須一直走動或做點事。"] },
+        { title: "12. 失去興趣", options: ["我對其他人和事物的興趣與過去一樣。", "我對其他人或事物的興趣比過去少。", "我對其他人或事物失去大部分的興趣。", "我對所有事物都失去興趣。"] },
+        { title: "13. 猶豫不決", options: ["我做決定的能力和過去一樣好。", "我發現自己比過去更難做決定。", "我做決定時比過去困難很多。", "我根本無法做任何決定。"] },
+        { title: "14. 無價值感", options: ["我不覺得自己毫無價值。", "我不認為自己像過去那樣有價值和用處。", "跟別人比起來，我覺得自己比較沒有價值。", "我覺得自己完全毫無價值。"] },
+        { title: "15. 精力喪失", options: ["我的精力和過去一樣充沛。", "我的精力不如從前。", "我沒有足夠的精力去做很多事。", "我沒有精力做任何事。"] },
+        { title: "16. 睡眠習慣改變", options: ["我的睡眠狀況沒有改變。", "我睡得比平常多一些，或者少一些。", "我睡得比平常多很多，或者少很多。", "我整天都在睡，或者我大多時間都睡不著。"] },
+        { title: "17. 易怒", options: ["我沒有比過去更容易生氣。", "我比過去更容易生氣或煩躁。", "我現在大部分時間都覺得生氣或煩躁。", "我隨時隨地都覺得生氣。"] },
+        { title: "18. 食慾改變", options: ["我的食慾沒有改變。", "我的食慾比平常稍差，或稍微好一些。", "我的食慾比平常差很多，或好很多。", "我完全沒有食慾，或一直想吃東西。"] },
+        { title: "19. 注意力不集中", options: ["我的專注力跟過去一樣好。", "我無法像過去那樣專心。", "我很難專注在任何事情上很長一段時間。", "我發現自己完全無法專心做任何事。"] },
+        { title: "20. 疲倦或乏力", options: ["我沒有覺得比過去更容易累。", "我比過去更容易覺得累。", "我幾乎做什麼事都會覺得累。", "我累到什麼事都做不了。"] },
+        { title: "21. 對性失去興趣", options: ["我對性的興趣與過去沒有改變。", "我對性的興趣比過去少。", "我對性的興趣現在變得非常低。", "我完全失去對性的興趣。"] }
+    ];
+
+    const container = document.getElementById('questions-container');
+
+    // 生成題目 HTML
+    questionsData.forEach((q, index) => {
+        const qNum = index + 1;
+        let optionsHtml = '';
+        
+        q.options.forEach((optText, optIndex) => {
+            optionsHtml += `
+                <label class="option-label" onclick="highlightSelection(this, 'q${qNum}')">
+                    <input type="radio" name="q${qNum}" value="${optIndex}">
+                    <span>${optText}</span>
+                </label>
+            `;
+        });
+
+        const cardHtml = `
+            <div class="question-card">
+                <div class="question-title">${q.title}</div>
+                <div class="option-group">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+        container.innerHTML += cardHtml;
+    });
+
+    // 點擊選項時的視覺回饋
+    function highlightSelection(labelElement, groupName) {
+        // 清除同組的其他選取樣式
+        const labels = document.querySelectorAll(`input[name="${groupName}"]`);
+        labels.forEach(radio => {
+            radio.closest('.option-label').classList.remove('selected');
+        });
+        // 加上新的選取樣式
+        labelElement.classList.add('selected');
+    }
+
+    // 重設表單
+    function resetForm() {
+        document.getElementById('bdi-form').reset();
+        document.getElementById('result-panel').style.display = 'none';
+        document.getElementById('suicide-alert-box').style.display = 'none';
+        
+        // 移除所有視覺選取
+        const allLabels = document.querySelectorAll('.option-label');
+        allLabels.forEach(label => label.classList.remove('selected'));
+    }
+
+    // 計算分數與判讀
+    function calculateScore() {
+        let totalScore = 0;
+        let missingQuestions = [];
+        let suicideScore = 0;
+
+        for (let i = 1; i <= 21; i++) {
+            const radios = document.getElementsByName('q' + i);
+            let answered = false;
+            
+            for (let radio of radios) {
+                if (radio.checked) {
+                    const val = parseInt(radio.value);
+                    totalScore += val;
+                    answered = true;
+                    // 記錄第9題(自殺意念)的分數
+                    if (i === 9) suicideScore = val;
+                    break;
+                }
+            }
+
+            if (!answered) missingQuestions.push(i);
+        }
+
+        if (missingQuestions.length > 0) {
+            alert("尚有題目未作答：第 " + missingQuestions.join(", ") + " 題。\n請確認每一題皆有勾選！");
+            return;
+        }
+
+        // 判斷嚴重度
+        let severity = "";
+        let bgColor = "";
+        
+        if (totalScore <= 13) {
+            severity = "微小 (Minimal)";
+            bgColor = "#27ae60"; // 綠色
+        } else if (totalScore <= 19) {
+            severity = "輕度 (Mild)";
+            bgColor = "#f39c12"; // 橘黃
+        } else if (totalScore <= 28) {
+            severity = "中度 (Moderate)";
+            bgColor = "#e67e22"; // 橘紅
+        } else {
+            severity = "重度 (Severe)";
+            bgColor = "#c0392b"; // 深紅
+        }
+
+        // 更新 UI
+        document.getElementById('total-score').innerText = totalScore;
+        document.getElementById('severity-level').innerText = severity;
+        document.querySelector('.score-display').style.backgroundColor = bgColor;
+
+        // 處理自殺警示
+        const alertBox = document.getElementById('suicide-alert-box');
+        if (suicideScore > 0) {
+            alertBox.style.display = 'block';
+        } else {
+            alertBox.style.display = 'none';
+        }
+
+        // 顯示結果
+        const resultPanel = document.getElementById('result-panel');
+        resultPanel.style.display = 'block';
+        resultPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>

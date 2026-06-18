@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDI-Y 貝克兒童及青少年憂鬱量表 | OPEN-PSY</title>
+    <style>
+        :root {
+            --primary-navy: #2c3e50;
+            --accent-blue: #3498db;
+            --bg-gray: #f4f7f6;
+            --card-white: #ffffff;
+            --border-color: #dddddd;
+            --highlight: #e3f2fd;
+            --alert-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #27ae60;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-gray);
+            color: #333333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .top-utility-bar {
+            max-width: 850px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .top-page-qr {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 8pt;
+            color: #7f8c8d;
+            background: var(--card-white);
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .top-page-qr img { width: 80px; height: 80px; margin-bottom: 4px; }
+
+        .paper {
+            background-color: var(--card-white);
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            border-top: 5px solid var(--primary-navy);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-blue);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+
+        h1 { margin: 5px 0; font-size: 22pt; color: var(--primary-navy); }
+        .subtitle { color: #7f8c8d; font-size: 11pt; }
+
+        .instruction-box {
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 11pt;
+            background-color: #f8f9fa;
+        }
+
+        /* 題目區塊樣式 - 適合兒童閱讀的大字體 */
+        .question-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-navy);
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .option-group {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .option-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 70px;
+            text-align: center;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight);
+            border-color: #90caf9;
+        }
+
+        .option-label span {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .option-label input[type="radio"] {
+            transform: scale(1.3);
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* 被選取的選項樣式 */
+        .option-label.selected {
+            background-color: var(--highlight);
+            border-color: var(--accent-blue);
+            color: var(--primary-navy);
+        }
+        .option-label.selected span {
+            font-weight: bold;
+            color: var(--primary-navy);
+        }
+
+        .btn-group {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12pt;
+            margin: 0 10px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background-color: var(--primary-navy); }
+        .btn-secondary { background-color: #95a5a6; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+
+        /* 結果顯示區 */
+        #result-panel {
+            display: none;
+            margin-top: 40px;
+            padding: 25px;
+            border: 2px solid var(--primary-navy);
+            border-radius: 8px;
+            background: #fdfefe;
+        }
+
+        .result-title {
+            margin-top: 0;
+            color: var(--primary-navy);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--primary-navy);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .score-number { font-size: 3rem; font-weight: bold; color: #f1c40f; }
+        
+        .suicide-alert {
+            display: none;
+            background-color: #fdedec;
+            border: 2px solid var(--alert-color);
+            color: var(--alert-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .interpretation-note {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        @media (max-width: 600px) {
+            .question-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .question-text { margin-bottom: 15px; }
+            .option-group { width: 100%; justify-content: space-between; }
+            .option-label { width: 22%; padding: 8px 5px; }
+            .option-label span { font-size: 0.8rem; }
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .paper { box-shadow: none; padding: 0; border: none; }
+            .top-utility-bar, .btn-group { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-utility-bar no-print-area">
+    <div class="top-page-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://cafmagic.github.io/open-psy/BDIY.html" alt="本頁 QR Code">
+        <span>手機掃描此頁</span>
+    </div>
+</div>
+
+<div class="paper">
+    <header>
+        <h1>貝克兒童及青少年憂鬱量表 (BDI-Y)</h1>
+        <div class="subtitle">Beck Depression Inventory for Youth | OPEN-PSY</div>
+    </header>
+
+    <div class="instruction-box">
+        <b>指導語：</b>這裡有一些句子是描述小朋友（或青少年）可能有的感覺或想法。請仔細讀每一個句子，然後想一想你在<b>「過去兩個星期」</b>是不是有這種感覺，選出最符合你的答案。
+    </div>
+
+    <form id="bdiy-form">
+        <div id="questions-container">
+            </div>
+
+        <div class="btn-group no-print-area">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">重新填寫</button>
+            <button type="button" class="btn" onclick="calculateScore()">計算結果</button>
+            <a href="index.html" class="btn btn-secondary">返回工具箱</a>
+        </div>
+    </form>
+
+    <div id="result-panel">
+        <h3 class="result-title">臨床計分結果</h3>
+        
+        <div class="suicide-alert" id="suicide-alert-box">
+            ⚠️ 臨床警訊：個案在「第19題：想要死掉」中得分大於0，具備潛在自我傷害風險，建議立即進行深入的臨床安全評估。
+        </div>
+
+        <div class="score-display">
+            <div>BDI-Y 原始總分：</div>
+            <div class="score-number" id="total-score">0</div>
+        </div>
+
+        <div class="interpretation-note">
+            <b>【臨床判讀說明】</b><br>
+            本量表滿分為 60 分。此分數為<b>「原始分數 (Raw Score)」</b>。<br>
+            在臨床實務上，必須將此原始分數對照 BYI-II 指導手冊中符合該個案<b>「年齡（7-10歲、11-14歲、15-18歲）」</b>與<b>「性別」</b>的常模對照表，轉換為 <b>T 分數 (T-score)</b> 才能判斷嚴重程度：<br>
+            • T 分數 < 55：正常範圍<br>
+            • T 分數 55 - 59：輕微偏高<br>
+            • T 分數 60 - 69：中度偏高 (需關注)<br>
+            • T 分數 ≥ 70：極度偏高 (具臨床顯著意義)
+        </div>
+    </div>
+</div>
+
+<script>
+    // BDI-Y 題庫 (20題)
+    const questionsData = [
+        "1. 我覺得自己沒有用。",
+        "2. 我想哭。",
+        "3. 我覺得生活很無聊。",
+        "4. 我覺得孤單。",
+        "5. 我覺得沒有人愛我。",
+        "6. 我覺得難過或悲傷。",
+        "7. 我覺得做什麼事都不對。",
+        "8. 我會肚子痛。",
+        "9. 我覺得自己不如別人。",
+        "10. 晚上我都睡不好。",
+        "11. 發生不好的事，我都覺得是我的錯。",
+        "12. 我覺得自己很笨。",
+        "13. 我覺得沒有人了解我。",
+        "14. 我什麼事都不想做。",
+        "15. 我覺得很累。",
+        "16. 我覺得自己的未來沒有希望。",
+        "17. 我覺得大家都不喜歡我。",
+        "18. 我覺得別人都有事情瞞著我。",
+        "19. 我想要死掉。",
+        "20. 我討厭我自己。"
+    ];
+
+    const options = [
+        { text: "從來沒有", value: 0 },
+        { text: "有時候", value: 1 },
+        { text: "經常", value: 2 },
+        { text: "總是", value: 3 }
+    ];
+
+    const container = document.getElementById('questions-container');
+
+    // 生成題目 HTML
+    questionsData.forEach((qText, index) => {
+        const qNum = index + 1;
+        let optionsHtml = '';
+        
+        options.forEach((opt) => {
+            optionsHtml += `
+                <label class="option-label" onclick="highlightSelection(this, 'q${qNum}')">
+                    <span>${opt.text}</span>
+                    <input type="radio" name="q${qNum}" value="${opt.value}">
+                </label>
+            `;
+        });
+
+        const cardHtml = `
+            <div class="question-card">
+                <div class="question-text">${qText}</div>
+                <div class="option-group">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+        container.innerHTML += cardHtml;
+    });
+
+    // 點擊選項時的視覺回饋
+    function highlightSelection(labelElement, groupName) {
+        const labels = document.querySelectorAll(`input[name="${groupName}"]`);
+        labels.forEach(radio => {
+            radio.closest('.option-label').classList.remove('selected');
+        });
+        labelElement.classList.add('selected');
+    }
+
+    // 重設表單
+    function resetForm() {
+        document.getElementById('bdiy-form').reset();
+        document.getElementById('result-panel').style.display = 'none';
+        document.getElementById('suicide-alert-box').style.display = 'none';
+        const allLabels = document.querySelectorAll('.option-label');
+        allLabels.forEach(label => label.classList.remove('selected'));
+    }
+
+    // 計算分數
+    function calculateScore() {
+        let totalScore = 0;
+        let missingQuestions = [];
+        let suicideScore = 0;
+
+        for (let i = 1; i <= 20; i++) {
+            const radios = document.getElementsByName('q' + i);
+            let answered = false;
+            
+            for (let radio of radios) {
+                if (radio.checked) {
+                    const val = parseInt(radio.value);
+                    totalScore += val;
+                    answered = true;
+                    // 記錄第19題(自殺意念)的分數
+                    if (i === 19) suicideScore = val;
+                    break;
+                }
+            }
+
+            if (!answered) missingQuestions.push(i);
+        }
+
+        if (missingQuestions.length > 0) {
+            alert("尚有題目未作答：第 " + missingQuestions.join(", ") + " 題。\n請確認每一題皆有勾選！");
+            return;
+        }
+
+        // 更新 UI
+        document.getElementById('total-score').innerText = totalScore;
+
+        // 處理自殺警示
+        const alertBox = document.getElementById('suicide-alert-box');
+        if (suicideScore > 0) {
+            alertBox.style.display = 'block';
+        } else {
+            alertBox.style.display = 'none';
+        }
+
+        // 顯示結果
+        const resultPanel = document.getElementById('result-panel');
+        resultPanel.style.display = 'block';
+        resultPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
